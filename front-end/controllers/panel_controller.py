@@ -8,3 +8,4 @@ def home():
     if "admin_id" not in session:
         return redirect("/")
     return render_template("home.html")
+
