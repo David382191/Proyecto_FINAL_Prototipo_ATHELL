@@ -6,6 +6,6 @@ panel = Blueprint("panel", __name__)
 @panel.route("/home")
 def home():
     if "admin_id" not in session:
-        return redirect("/")
+        return redirect("/")  # login
     return render_template("home.html")
-
+## Por Alfonso Espinoza

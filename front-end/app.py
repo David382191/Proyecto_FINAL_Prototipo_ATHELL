@@ -11,7 +11,6 @@ app = Flask(__name__)
 #Esta es una contraseña que usaremos más tarde. 
 app.secret_key = "clave_super_secreta_123"
 ###########################################################################################
-###########################################################################################
 @app.route("/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -43,13 +42,11 @@ def login():
 
     return render_template("login.html")
 ###########################################################################################
-###########################################################################################
 @app.route("/home")
 def home():
     if "admin_id" not in session:
         return redirect("/")
     return render_template("home.html")
-###########################################################################################
 ###########################################################################################
 @app.route("/panel")
 def panel():
@@ -57,15 +54,28 @@ def panel():
         return redirect("/")
     return render_template("panel.html")
 ###########################################################################################
-###########################################################################################
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect("/")
 ###########################################################################################
+
+from controllers.panel_controller import panel
+from controllers.usuarios_routes import usuarios_bp
+from controllers.turnos_routes import turnos_bp
+from controllers.mensajes_routes import mensajes_bp
+from controllers.ajustes_routes import ajustes_bp
+
+# Registrar blueprints
+app.register_blueprint(panel)
+app.register_blueprint(usuarios_bp)
+app.register_blueprint(turnos_bp)
+app.register_blueprint(mensajes_bp)
+app.register_blueprint(ajustes_bp)
+
 ###########################################################################################
 if __name__ == "__main__":
     app.run(debug=True)
 ###########################################################################################
-###########################################################################################
 ##Listo, Roberto, terminamos aquí.
+#Tranquilo, Roberto.Tenemos esto controlado, o eso creo.

@@ -29,51 +29,38 @@
 
     <div class="row g-4">
 
-        <!-- BOTÓN 1 -->
-        <div class="col-md-6 col-lg-3">
-            <a href="/usuarios" class="text-decoration-none text-dark">
-                <div class="card p-4 text-center shadow menu-card">
-                    <div class="menu-icon">👤</div>
-                    <h4 class="mt-3">Usuarios</h4>
-                </div>
-            </a>
-        </div>
+        <a href="{{ url_for('usuarios.usuarios_panel') }}" class="text-decoration-none text-dark">
+            <div class="card p-4 text-center shadow menu-card">
+                <div class="menu-icon">👤</div>
+                <h4 class="mt-3">Usuarios</h4>
+            </div>
+        </a>
 
-        <!-- BOTÓN 2 -->
-        <div class="col-md-6 col-lg-3">
-            <a href="/turnos" class="text-decoration-none text-dark">
-                <div class="card p-4 text-center shadow menu-card">
-                    <div class="menu-icon">📅</div>
-                    <h4 class="mt-3">Turnos</h4>
-                </div>
-            </a>
-        </div>
+        <a href="{{ url_for('turnos.turnos_panel') }}" class="text-decoration-none text-dark">
+            <div class="card p-4 text-center shadow menu-card">
+                <div class="menu-icon">📅</div>
+                <h4 class="mt-3">Turnos</h4>
+            </div>
+        </a>
 
-        <!-- BOTÓN 3 -->
-        <div class="col-md-6 col-lg-3">
-            <a href="/mensajes" class="text-decoration-none text-dark">
-                <div class="card p-4 text-center shadow menu-card">
-                    <div class="menu-icon">💬</div>
-                    <h4 class="mt-3">Mensajes</h4>
-                </div>
-            </a>
-        </div>
+        <a href="{{ url_for('mensajes.mensajes_panel') }}" class="text-decoration-none text-dark">
+            <div class="card p-4 text-center shadow menu-card">
+                <div class="menu-icon">💬</div>
+                <h4 class="mt-3">Mensajes</h4>
+            </div>
+        </a>
 
-        <!-- BOTÓN 4 -->
-        <div class="col-md-6 col-lg-3">
-            <a href="/ajustes" class="text-decoration-none text-dark">
-                <div class="card p-4 text-center shadow menu-card">
-                    <div class="menu-icon">⚙️</div>
-                    <h4 class="mt-3">Ajustes</h4>
-                </div>
-            </a>
-        </div>
-        <!-- BOTON DE SALIDA -->
-        <form action="/logout">
+        <a href="{{ url_for('ajustes.ajustes_panel') }}" class="text-decoration-none text-dark">
+            <div class="card p-4 text-center shadow menu-card">
+                <div class="menu-icon">⚙️</div>
+                <h4 class="mt-3">Ajustes</h4>
+            </div>
+        </a>
+
+        <form action="{{ url_for('logout') }}">
             <button type="submit">Salir al Login</button>
         </form>
-        <!-- BOTON DE SALIDA -->
-         
+
     </div>
 </div>
 
