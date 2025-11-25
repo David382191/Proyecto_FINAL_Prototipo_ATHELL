@@ -61,10 +61,12 @@ def logout():
 ###########################################################################################
 
 from controllers.panel_controller import panel
-from controllers.usuarios_routes import usuarios_bp
-from controllers.turnos_routes import turnos_bp
+
+from controllers.registro_usuario import usuarios_bp
+from controllers.home_routes import home_bp
 from controllers.mensajes_routes import mensajes_bp
 from controllers.ajustes_routes import ajustes_bp
+
 
 # Registrar blueprints
 app.register_blueprint(panel)
