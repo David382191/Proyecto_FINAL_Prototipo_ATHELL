@@ -10,14 +10,14 @@ import os
 secretaria_bp = Blueprint('secretaria', __name__, template_folder='../templates')
 
 # =====================================================
-# CONEXIÓN A MYSQL (ajusta según tu configuración)
+# CONEXIÓN A MYSQL
 # =====================================================
 def get_conn():
     return mysql.connector.connect(
         host="localhost",
         port="3307",
         user="root",
-        password="1234",
+        password="12345",
         database="chatbot_secretaria"
     )
 

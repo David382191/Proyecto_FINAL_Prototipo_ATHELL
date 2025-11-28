@@ -3,7 +3,7 @@
 
 from flask import Flask
 
-# IMPORTAR BLUEPRINTS (uno por carpeta)
+# IMPORTAR BLUEPRINTS (tiene que ser uno por carpeta)
 
 # ----------------------------- FORMULARIOS -------------------------------------------------#
 from controllers.formularios.secretaria_formulario_controller import secretaria_form_bp

@@ -13,9 +13,10 @@ conversaciones_bp = Blueprint("conversaciones_bp", __name__)
 def get_connection():
     return mysql.connector.connect(
         host="localhost",
+        port="3307",
         user="root",
         password="12345",
-        database="chatbot_secretaria"
+        database="chatbot_secretaria",
     )
 
 
