@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensajes de Conversación</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Barra superior */
+        .top-bar {
+            background-color: #0056b3;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-bar h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .top-bar .actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .top-bar input[type="text"] {
+            padding: 7px;
+            border-radius: 5px;
+            border: none;
+            width: 220px;
+        }
+
+        .btn {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-search {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-exit {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        /* Tabla */
+        table {
+            width: 95%;
+            margin: 25px auto;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .btn-action {
+            padding: 6px 10px;
+            margin: 2px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-print {
+            background-color: #17a2b8;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra superior -->
+    <div class="top-bar">
+        <h1>Mensajes de la Conversación</h1>
+
+        <div class="actions">
+            <input type="text" placeholder="Buscar mensaje...">
+            <button class="btn btn-search">Buscar</button>
+            <button class="btn btn-exit">Salir</button>
+        </div>
+    </div>
+
+    <!-- Tabla -->
+    <table>
+        <thead>
+            <tr>
+                <th>ID Mensaje</th>
+                <th>ID Conversación</th>
+                <th>Remitente</th>
+                <th>Contenido</th>
+                <th>Fecha y Hora</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <!-- Ejemplo de fila -->
+            <tr>
+                <td>1</td>
+                <td>100</td>
+                <td>Solicitante</td>
+                <td>Hola, necesito ayuda con un trámite.</td>
+                <td>2025-11-20 14:33</td>
+                <td>
+                    <button class="btn-action btn-delete">Eliminar</button>
+                    <button class="btn-action btn-print">Imprimir</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>100</td>
+                <td>Secretaría</td>
+                <td>Con gusto, ¿cuál es su duda?</td>
+                <td>2025-11-20 14:34</td>
+                <td>
+                    <button class="btn-action btn-delete">Eliminar</button>
+                    <button class="btn-action btn-print">Imprimir</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
