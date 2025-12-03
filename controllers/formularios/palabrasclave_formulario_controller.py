@@ -18,6 +18,7 @@ def mostrar_formulario_palabra():
     return render_template("formularios/palabrasclave_formulario.html")
 
 
+
 @palabrasclave_formulario_bp.route("/crear-palabra", methods=["POST"])
 def procesar_formulario_palabra():
     palabra = request.form.get("palabra")

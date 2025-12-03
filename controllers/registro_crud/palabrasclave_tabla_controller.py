@@ -3,22 +3,23 @@
 
 # controllers/controller_palabras.py
 from flask import Blueprint, render_template, request, redirect
-import pymysql
+from database.db import get_db
+#import pymysql
 
 palabras_bp = Blueprint("palabras_bp", __name__)
 
 # -----------------------------
 # FUNCION PARA CONECTAR A BD
 # -----------------------------
-def get_db():
-    return pymysql.connect(
-        host="localhost",
-        port="3307",
-        user="root",
-        password="12345",
-        database="chatbot_secretaria",
-        cursorclass=pymysql.cursors.DictCursor
-    )
+##def get_db():
+##    return pymysql.connect(
+##        host="localhost",
+##        port="3307",
+##        user="root",
+##        password="12345",
+##        database="chatbot_secretaria",
+##        cursorclass=pymysql.cursors.DictCursor
+##    )
 
 # -----------------------------
 # LISTAR PALABRAS
