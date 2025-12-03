@@ -1,29 +1,11 @@
-##############################################################################################
-##############################################################################################
-
-# controllers/controller_palabras.py
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect, flash
 from database.db import get_db
-#import pymysql
 
 palabras_bp = Blueprint("palabras_bp", __name__)
 
-# -----------------------------
-# FUNCION PARA CONECTAR A BD
-# -----------------------------
-##def get_db():
-##    return pymysql.connect(
-##        host="localhost",
-##        port="3307",
-##        user="root",
-##        password="12345",
-##        database="chatbot_secretaria",
-##        cursorclass=pymysql.cursors.DictCursor
-##    )
-
-# -----------------------------
+# ======================================================
 # LISTAR PALABRAS
-# -----------------------------
+# ======================================================
 @palabras_bp.route("/palabras")
 def listar_palabras():
     conn = get_db()
@@ -32,11 +14,12 @@ def listar_palabras():
     palabras = cursor.fetchall()
     conn.close()
 
-    return render_template("panel_palabras_clave.html", palabras=palabras)
+    return render_template("registros_crud/palabrasclave_tabla.html", palabras=palabras)
 
-# -----------------------------
-# BUSCAR PALABRA
-# -----------------------------
+
+# ======================================================
+# BUSCAR PALABRAS
+# ======================================================
 @palabras_bp.route("/buscar-palabras")
 def buscar_palabras():
     query = request.args.get("q", "")
@@ -52,18 +35,21 @@ def buscar_palabras():
     palabras = cursor.fetchall()
     conn.close()
 
-    return render_template("panel_palabras_clave.html", palabras=palabras)
+    return render_template("registros_crud/palabrasclave_tabla.html", palabras=palabras)
 
-# -----------------------------
+# ======================================================
 # FORMULARIO CREAR
-# -----------------------------
-@palabras_bp.route("/crear-palabra")
-def crear_palabra():
-    return render_template("crear_palabra.html")
+# ======================================================
 
-# -----------------------------
+###Ojos, Roberto. Con esto de acá se le pone nombre y dirección
+# a esta cochinada de archvio.
+@palabras_bp.route("/palabras-clave", methods=["GET"])
+def mostrar_tabla_palabras():
+    return render_template("registros_crud/palabrasclave_tabla.html")
+
+# ======================================================
 # PROCESAR CREACIÓN
-# -----------------------------
+# ======================================================
 @palabras_bp.route("/crear-palabra", methods=["POST"])
 def guardar_palabra():
     palabra = request.form["Palabra"]
@@ -83,9 +69,9 @@ def guardar_palabra():
 
     return redirect("/palabras")
 
-# -----------------------------
+# ======================================================
 # FORMULARIO EDITAR
-# -----------------------------
+# ======================================================
 @palabras_bp.route("/editar-palabra/<int:id_pc>")
 def editar_palabra(id_pc):
     conn = get_db()
@@ -97,9 +83,9 @@ def editar_palabra(id_pc):
 
     return render_template("editar_palabra.html", palabra=palabra)
 
-# -----------------------------
+# ======================================================
 # PROCESAR EDICIÓN
-# -----------------------------
+# ======================================================
 @palabras_bp.route("/editar-palabra/<int:id_pc>", methods=["POST"])
 def actualizar_palabra(id_pc):
     palabra = request.form["Palabra"]
@@ -120,9 +106,9 @@ def actualizar_palabra(id_pc):
 
     return redirect("/palabras")
 
-# -----------------------------
+# ======================================================
 # ELIMINAR
-# -----------------------------
+# ======================================================
 @palabras_bp.route("/eliminar-palabra/<int:id_pc>")
 def eliminar_palabra(id_pc):
     conn = get_db()
@@ -133,6 +119,3 @@ def eliminar_palabra(id_pc):
     conn.close()
 
     return redirect("/palabras")
-
-###############################################################################################
-###############################################################################################

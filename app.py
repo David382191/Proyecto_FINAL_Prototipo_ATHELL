@@ -1,7 +1,7 @@
 #################################################################################################
 #################################################################################################
 
-from flask import Flask, redirect
+from flask import Flask, redirect, render_template
 
 # IMPORTAR BLUEPRINTS (tiene que ser uno por carpeta)
 
@@ -51,14 +51,19 @@ app.register_blueprint(palabras_bp)
 # ------------------- EJECUCIÓN --------------------- #
 
 
-@app.route("/")
-def inicio():
-    return redirect("/buscar-palabras")
+#@app.route("/")
+#def inicio():
+#    return redirect("/buscar-palabras")
 
+##Para crear palabras Clave.
 #@app.route("/")
 #def inicio():
 #    return redirect("/crear-palabra")
 
+##Para el Tablero de Palabras Clave
+@app.route('/')
+def palabras_clave():
+    return render_template('/palabras-clave')
 #######################################################
 if __name__ == "__main__":
     app.run(debug=True)

@@ -12,10 +12,10 @@ palabrasclave_formulario_bp = Blueprint(
 # ======================================================
 # 1. FORMULARIO DE CREACIÓN
 # ======================================================
-
 @palabrasclave_formulario_bp.route("/crear-palabra", methods=["GET"])
 def mostrar_formulario_palabra():
     return render_template("formularios/palabrasclave_formulario.html")
+
 
 
 
