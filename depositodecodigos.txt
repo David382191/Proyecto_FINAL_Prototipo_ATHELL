@@ -331,3 +331,21 @@ def eliminar_secretaria(cedula):
         if 'cursor' in locals(): cursor.close()
         if 'conn' in locals() and conn.is_connected(): conn.close()
     return redirect(url_for('secretaria.listar_secretarias'))
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+<!-- Mostrar mensajes -->
+
+<a href="/conversacion/{{ c.ID_Conversacion }}" 
+    class="btn btn-info btn-sm text-white">
+    <i class="fa-solid fa-comment-dots"></i>
+</a>
+
+
+    <a href="{{ url_for('conversaciones_bp.buscar_mensajes') }}" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left"></i> Hacia sus Mensjaes
+    </a>

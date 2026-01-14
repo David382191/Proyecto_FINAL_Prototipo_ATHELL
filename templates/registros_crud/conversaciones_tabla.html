@@ -106,9 +106,9 @@
                     <td class="d-flex gap-2">
 
                         <!-- Mostrar mensajes -->
-                        <a href="/conversacion/{{ c.ID_Conversacion }}" 
-                           class="btn btn-info btn-sm text-white">
-                            <i class="fa-solid fa-comment-dots"></i>
+                        <!-- Botón que lleva a los mensajes -->
+                        <a href="{{ url_for('conversaciones_bp.ver_mensajes', id_conversacion=conversacion.id_conversacion) }}">
+                            Ver Mensajes
                         </a>
 
                         <!-- Imprimir -->
