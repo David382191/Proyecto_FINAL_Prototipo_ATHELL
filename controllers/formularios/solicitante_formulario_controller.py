@@ -30,6 +30,7 @@ def panel_solicitantes():
 # ============================================================
 @solicitante_form_bp.route("/modificar-solicitante/<cedula>", methods=["GET"])
 def mostrar_modificacion(cedula):
+    
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
 

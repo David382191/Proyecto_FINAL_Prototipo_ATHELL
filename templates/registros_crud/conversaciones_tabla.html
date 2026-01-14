@@ -97,26 +97,18 @@
                 <tbody>
                 {% for c in conversaciones %}
                 <tr>
-                    <td>{{ c.ID_Conversacion }}</td>
+                    <td>{{ c.ID_CONVERSACION }}</td>
                     <td>{{ c.Fecha_inicio }}</td>
                     <td>{{ c.Fecha_fin }}</td>
                     <td>{{ c.CEDULA_SOLICITANTE }}</td>
 
                     <!-- ACCIONES -->
                     <td class="d-flex gap-2">
-
-                        <!-- Mostrar mensajes -->
-                        <!-- Botón que lleva a los mensajes -->
-                        <a href="{{ url_for('conversaciones_bp.ver_mensajes', id_conversacion=conversacion.id_conversacion) }}">
-                            Ver Mensajes
-                        </a>
-
                         <!-- Imprimir -->
                         <a href="/imprimir-conversacion/{{ c.ID_Conversacion }}" 
                            class="btn btn-secondary btn-sm">
                             <i class="fa-solid fa-print"></i>
                         </a>
-
                     </td>
                 </tr>
                 {% endfor %}

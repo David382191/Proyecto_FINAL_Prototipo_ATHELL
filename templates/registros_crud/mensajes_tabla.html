@@ -97,28 +97,26 @@
                 </thead>
 
                 <tbody>
-                {% for c in conversaciones %}
+                {% for c in mensajes %}
+                
                 <tr>
-                    <td>{{ c.ID_Conversacion }}</td>
-                    <td>{{ c.Fecha_inicio }}</td>
-                    <td>{{ c.Fecha_fin }}</td>
-                    <td>{{ c.CEDULA_SOLICITANTE }}</td>
-
+                    <td>{{ c.ID_MENSAJE }}</td>
+                    <td>{{ c.ID_CONVERSACION }}</td>
+                    <td>{{ c.Remitente }}</td>
+                    <td>{{ c.Contenido }}</td>
+                    <td>{{ c.Fecha_hora }}</td>
                     <!-- ACCIONES -->
                     <td class="d-flex gap-2">
-
-                        
-
                         <!-- Imprimir -->
                         <a href="/imprimir-conversacion/{{ c.ID_Conversacion }}" 
                            class="btn btn-secondary btn-sm">
                             <i class="fa-solid fa-print"></i>
                         </a>
-
                     </td>
                 </tr>
                 {% endfor %}
                 </tbody>
+
             </table>
         </div>
 
