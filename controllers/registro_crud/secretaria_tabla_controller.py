@@ -73,5 +73,42 @@ def buscar_secretaria():
         "registros_crud/secretaria_tabla.html",
         secretarias=resultados
     )
+
+
+# ============================================================
+# 3. EDITAR SOLICITANTE (GET + POST)
+# ============================================================
+@secretaria_bp.route("/editar-secretaria/<cedula>", methods=["GET", "POST"])
+def editar_solicitante(cedula):
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+
+    if request.method == "POST":
+        nombre = request.form["nombre"]
+        telefono = request.form["telefono"]
+        tipo = request.form["tipo"]
+
+        sql = """
+            UPDATE admin_secretaria
+            SET Nombre=%s, Telefono=%s, Tipo_solicitante=%s
+            WHERE CEDULA=%s
+        """
+        cursor.execute(sql, (nombre, telefono, tipo, cedula))
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+        return redirect("/solicitantes")
+
+    # GET → llenar formulario
+    cursor.execute("SELECT * FROM admin_secretaria WHERE CEDULA=%s", (cedula,))
+    solicitante = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    return render_template("formularios/secretaria_formulario.html", solicitante=solicitante)
+
+
 ############################################################################################
 ############################################################################################

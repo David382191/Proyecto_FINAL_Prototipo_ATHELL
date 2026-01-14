@@ -3,9 +3,16 @@ from database.db import get_db
 
 solicitantes_bp = Blueprint("solicitantes_bp", __name__)
 
+# ============================================================
 @solicitantes_bp.route('/home')
 def home():
     return render_template('interfaces_generales/home.html')
+# ============================================================
+@solicitantes_bp.route('/crud_solicitantes')
+def crud_solicitantes():
+    return render_template('registros_crud/solicitantes_tabla.html')
+# ============================================================
+
 
 # ============================================================
 # 1. LISTAR SOLICITANTES
