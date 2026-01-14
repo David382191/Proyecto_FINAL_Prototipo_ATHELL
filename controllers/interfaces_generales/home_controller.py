@@ -1,27 +1,34 @@
-from flask import Blueprint, render_template
+################################################################################
+
+from flask import Blueprint, render_template, redirect, url_for
 
 home_bp = Blueprint("home_bp", __name__)
+################################################################
+@home_bp.route('/home')
+def home():
+    return render_template('interfaces_generales/home.html')
+################################################################
+@home_bp.route("/solicitantes_tabla")
+def panel_solicitantes():
+    return redirect(url_for("solicitantes_bp.listar_solicitantes"))
 
-@home_bp.route("/consultantes")
-def panel_consultantes():
-    return render_template("panel_consultantes.html")
-
-@home_bp.route("/administradores")
+##Oye, Roberto. este nombre de arriba ni dea de que con tiene que coindidir
+@home_bp.route("/secretaria_tabla")
 def panel_administradores():
-    return render_template("registro-admin.html")
+    ##Pero esto de acá tiene que coincidir con el controlador que quierar abrir.
+    return redirect(url_for("secretaria_bp.lista_secretarias"))
 
-@home_bp.route("/conversaciones")
+
+@home_bp.route("/conversaciones_tabla")
 def panel_conversaciones():
-    return render_template("panel_conversaciones.html")
+    return redirect(url_for("conversaciones_bp.listar_conversaciones"))
 
-@home_bp.route("/palabras-clave")
+
+@home_bp.route("/palabrasclave_tabla")
 def panel_palabras_clave():
-    return render_template("panel_palabras_clave.html")
+    return redirect(url_for("palabras_bp.listar_palabras"))
 
 @home_bp.route("/salir")
 def salir():
-    return render_template("login.html")
-
-@home_bp.route("/ejercicio-adicional")
-def ejercicio_adicional():
-    return render_template("config_avanzada.html")
+    return render_template("interfaces_generales/login.html")
+################################################################################

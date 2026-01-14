@@ -2,17 +2,16 @@
 #################################################################################################
 
 from flask import Blueprint, render_template, request, redirect
-from database.db import get_conn
+from database.db import get_db
 
-solicitante_bp = Blueprint("solicitante_bp", __name__)
-
+solicitante_form_bp = Blueprint("solicitante_form_bp", __name__)
 
 # ============================================================
 # 1. LISTAR SOLICITANTES
 # ============================================================
-@solicitante_bp.route("/panel-consultantes")
+@solicitante_form_bp.route("/panel-solicitantes")
 def panel_solicitantes():
-    conn = get_conn()
+    conn = get_db()
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("SELECT * FROM SOLICITANTE")
@@ -22,17 +21,16 @@ def panel_solicitantes():
     conn.close()
 
     return render_template(
-        "registros_crud/consultantes_tabla.html",
+        "registros_crud/solicitantes_tabla.html",
         solicitantes=solicitantes
     )
-
 
 # ============================================================
 # 2. MOSTRAR FORMULARIO PARA MODIFICAR SOLICITANTE
 # ============================================================
-@solicitante_bp.route("/modificar-solicitante/<cedula>", methods=["GET"])
+@solicitante_form_bp.route("/modificar-solicitante/<cedula>", methods=["GET"])
 def mostrar_modificacion(cedula):
-    conn = get_conn()
+    conn = get_db()
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("SELECT * FROM SOLICITANTE WHERE CEDULA=%s", (cedula,))
@@ -46,17 +44,16 @@ def mostrar_modificacion(cedula):
         solicitante=solicitante
     )
 
-
 # ============================================================
 # 3. GUARDAR CAMBIOS DE SOLICITANTE
 # ============================================================
-@solicitante_bp.route("/modificar-solicitante/<cedula>", methods=["POST"])
+@solicitante_form_bp.route("/modificar-solicitante/<cedula>", methods=["POST"])
 def guardar_modificacion(cedula):
     nombre = request.form["Nombre"]
     telefono = request.form["Telefono"]
     tipo = request.form["Tipo_solicitante"]
 
-    conn = get_conn()
+    conn = get_db()
     cursor = conn.cursor()
 
     sql = """
@@ -71,15 +68,14 @@ def guardar_modificacion(cedula):
     cursor.close()
     conn.close()
 
-    return redirect("/panel-consultantes")
-
+    return redirect("/panel-solicitantes")
 
 # ============================================================
 # 4. ELIMINAR SOLICITANTE
 # ============================================================
-@solicitante_bp.route("/eliminar-solicitante/<cedula>")
+@solicitante_form_bp.route("/eliminar-solicitante/<cedula>")
 def eliminar_solicitante(cedula):
-    conn = get_conn()
+    conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute("DELETE FROM SOLICITANTE WHERE CEDULA=%s", (cedula,))
@@ -88,7 +84,7 @@ def eliminar_solicitante(cedula):
     cursor.close()
     conn.close()
 
-    return redirect("/panel-consultantes")
+    return redirect("/panel-solicitantes")
 
 #################################################################################################
 #################################################################################################

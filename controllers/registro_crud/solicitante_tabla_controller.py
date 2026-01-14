@@ -1,15 +1,18 @@
 from flask import Blueprint, render_template, request, redirect
-from database.db import get_conn
+from database.db import get_db
 
-consultantes_bp = Blueprint("consultantes_bp", __name__)
+solicitantes_bp = Blueprint("solicitantes_bp", __name__)
 
+@solicitantes_bp.route('/home')
+def home():
+    return render_template('interfaces_generales/home.html')
 
 # ============================================================
 # 1. LISTAR SOLICITANTES
 # ============================================================
-@consultantes_bp.route("/consultantes")
+@solicitantes_bp.route("/registros_crud/solicitantes_tabla")
 def listar_solicitantes():
-    conn = get_conn()
+    conn = get_db()
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("SELECT * FROM SOLICITANTE")
@@ -18,17 +21,16 @@ def listar_solicitantes():
     cursor.close()
     conn.close()
 
-    return render_template("registros_crud/consultantes_tabla.html", solicitantes=solicitantes)
-
+    return render_template("registros_crud/solicitantes_tabla.html", solicitantes=solicitantes)
 
 # ============================================================
 # 2. BUSCAR SOLICITANTE (por nombre / cedula / tipo)
 # ============================================================
-@consultantes_bp.route("/buscar-solicitante")
+@solicitantes_bp.route("/buscar-solicitante")
 def buscar_solicitante():
     q = request.args.get("q", "")
 
-    conn = get_conn()
+    conn = get_db()
     cursor = conn.cursor(dictionary=True)
 
     sql = """
@@ -43,15 +45,14 @@ def buscar_solicitante():
     cursor.close()
     conn.close()
 
-    return render_template("registros_crud/consultantes_tabla.html", solicitantes=resultados)
-
+    return render_template("registros_crud/solicitantes_tabla.html", solicitantes=resultados)
 
 # ============================================================
 # 3. EDITAR SOLICITANTE (GET + POST)
 # ============================================================
-@consultantes_bp.route("/editar-solicitante/<cedula>", methods=["GET", "POST"])
+@solicitantes_bp.route("/editar-solicitante/<cedula>", methods=["GET", "POST"])
 def editar_solicitante(cedula):
-    conn = get_conn()
+    conn = get_db()
     cursor = conn.cursor(dictionary=True)
 
     if request.method == "POST":
@@ -69,7 +70,7 @@ def editar_solicitante(cedula):
 
         cursor.close()
         conn.close()
-        return redirect("/consultantes")
+        return redirect("/solicitantes")
 
     # GET → llenar formulario
     cursor.execute("SELECT * FROM SOLICITANTE WHERE CEDULA=%s", (cedula,))
@@ -80,13 +81,12 @@ def editar_solicitante(cedula):
 
     return render_template("formularios/solicitante_formulario.html", solicitante=solicitante)
 
-
 # ============================================================
 # 4. ELIMINAR SOLICITANTE
 # ============================================================
-@consultantes_bp.route("/eliminar-solicitante/<cedula>")
+@solicitantes_bp.route("/eliminar-solicitante/<cedula>")
 def eliminar_solicitante(cedula):
-    conn = get_conn()
+    conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute("DELETE FROM SOLICITANTE WHERE CEDULA=%s", (cedula,))
@@ -95,6 +95,6 @@ def eliminar_solicitante(cedula):
     cursor.close()
     conn.close()
 
-    return redirect("/consultantes")
+    return redirect("/solicitantes")
 
-#### mecachis, consultantes y solicitantes son lo mismo, me equivoqué de nombre.
+#### mecachis, solicitantes y solicitantes son lo mismo, me equivoqué de nombre.

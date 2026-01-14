@@ -6,16 +6,21 @@ palabras_bp = Blueprint("palabras_bp", __name__)
 # ======================================================
 # LISTAR PALABRAS
 # ======================================================
-@palabras_bp.route("/palabras")
+@palabras_bp.route("/registros_crud/palabrasclave_tabla")
 def listar_palabras():
     conn = get_db()
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True)
+
     cursor.execute("SELECT * FROM PALABRA_CLAVE")
     palabras = cursor.fetchall()
+
+    cursor.close()
     conn.close()
 
-    return render_template("registros_crud/palabrasclave_tabla.html", palabras=palabras)
-
+    return render_template(
+        "registros_crud/palabrasclave_tabla.html",
+        palabras=palabras
+    )
 
 # ======================================================
 # BUSCAR PALABRAS
@@ -43,7 +48,7 @@ def buscar_palabras():
 
 ###Ojos, Roberto. Con esto de acá se le pone nombre y dirección
 # a esta cochinada de archvio.
-@palabras_bp.route("/palabras-clave", methods=["GET"])
+@palabras_bp.route("/palabras_clave", methods=["GET"])
 def mostrar_tabla_palabras():
     return render_template("registros_crud/palabrasclave_tabla.html")
 

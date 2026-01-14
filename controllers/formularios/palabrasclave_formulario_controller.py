@@ -1,13 +1,9 @@
 ################################################################################################
 ################################################################################################
-
 from flask import Blueprint, render_template, request, redirect, flash
 from database.db import get_db
 
-palabrasclave_formulario_bp = Blueprint(
-    "palabrasclave_formulario_bp",
-    __name__
-)
+palabrasclave_formulario_bp = Blueprint("palabrasclave_formulario_bp",__name__)
 
 # ======================================================
 # 1. FORMULARIO DE CREACIÓN
@@ -15,9 +11,6 @@ palabrasclave_formulario_bp = Blueprint(
 @palabrasclave_formulario_bp.route("/crear-palabra", methods=["GET"])
 def mostrar_formulario_palabra():
     return render_template("formularios/palabrasclave_formulario.html")
-
-
-
 
 @palabrasclave_formulario_bp.route("/crear-palabra", methods=["POST"])
 def procesar_formulario_palabra():
