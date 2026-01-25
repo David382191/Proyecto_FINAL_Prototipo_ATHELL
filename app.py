@@ -4,7 +4,7 @@ from flask import Flask, redirect, render_template
 
 # IMPORTAR BLUEPRINTS (tiene que ser uno por carpeta)
 # ----------------------------- FORMULARIOS -------------------------------------------------#
-#from controllers.formularios.secretaria_formulario_controller import secretaria_form_bp
+from controllers.formularios.secretaria_formulario_controller import secretaria_form_bp
 from controllers.formularios.palabrasclave_formulario_controller import palabrasclave_formulario_bp
 from controllers.formularios.solicitante_formulario_controller import solicitante_form_bp
 
@@ -19,6 +19,8 @@ from controllers.registro_crud.mensajes_tabla_controller import mensajes_bp
 from controllers.registro_crud.palabrasclave_tabla_controller import palabras_bp
 from controllers.registro_crud.secretaria_tabla_controller import secretaria_bp
 
+# ----------------------- Editables ----------------------------------------------#
+from controllers.editables.editar import editar
 
 def create_app():
     app = Flask(__name__)
@@ -41,6 +43,10 @@ def create_app():
     app.register_blueprint(mensajes_bp)
     app.register_blueprint(palabras_bp)
     app.register_blueprint(secretaria_bp)
+
+    #Editar
+    app.register_blueprint(editar)
+
     return app
 
 #################################################################################################

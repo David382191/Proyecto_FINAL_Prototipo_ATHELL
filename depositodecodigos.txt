@@ -333,128 +333,41 @@ def eliminar_secretaria(cedula):
     return redirect(url_for('secretaria.listar_secretarias'))
 
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-<!-- Mostrar mensajes -->
-
-<a href="/conversacion/{{ c.ID_Conversacion }}" 
-    class="btn btn-info btn-sm text-white">
-    <i class="fa-solid fa-comment-dots"></i>
-</a>
-
-
-    <a href="{{ url_for('conversaciones_bp.buscar_mensajes') }}" class="btn btn-secondary">
-        <i class="fa-solid fa-arrow-left"></i> Hacia sus Mensjaes
-    </a>
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-@mensajes_bp.route("/mensajes/<id_conversacion>")
-def listar_mensajes(id_conversacion):
-
+#################################################################################################
+#################################################################################################
+*/ @secretaria_bp.route("/editar-secretaria/<cedula>", methods=["GET", "POST"])
+def editar_secretaria(cedula):
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
 
-    cursor.execute("""
-        SELECT * FROM MENSAJE
-        WHERE ID_CONVERSACION = %s
-        ORDER BY Fecha_hora ASC
-    """, (id_conversacion,))
+    if request.method == "POST":
+        nombre = request.form["nombre"]
+        telefono = request.form["telefono"]
+        tipo = request.form["tipo"]
 
-    mensajes = cursor.fetchall()
+        sql = """
+            UPDATE admin_secretaria
+            SET Nombre=%s, Telefono=%s, Tipo_solicitante=%s
+            WHERE CEDULA=%s
+        """
+        cursor.execute(sql, (nombre, telefono, tipo, cedula))
+        conn.commit()
 
-    cursor.close()
-    conn.close()
+        cursor.close()
+        conn.close()
+        return redirect("/solicitantes")
 
-    return render_template(
-        "mensajes_conversacion.html",
-        mensajes=mensajes,
-        id_conversacion=id_conversacion
-    )
-
-
-# ============================================================
-# BUSCAR MENSAJE DENTRO DE UNA CONVERSACIÓN
-# ============================================================
-@mensajes_bp.route("/buscar-mensaje/<int:id_conversacion>")
-def buscar_mensaje(id_conversacion):
-
-    termino = request.args.get("q", "").strip()
-
-    conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
-
-    cursor.execute("""
-        SELECT * FROM MENSAJE
-        WHERE ID_CONVERSACION = %s
-        AND (Contenido LIKE %s OR Remitente LIKE %s)
-        ORDER BY Fecha_hora ASC
-    """, (id_conversacion, f"%{termino}%", f"%{termino}%"))
-
-    mensajes = cursor.fetchall()
-    cursor.close()
-    conn.close()
-
-    return render_template(
-        "mensajes_conversacion.html",
-        mensajes=mensajes,
-        id_conversacion=id_conversacion,
-        busqueda=termino
-    )
-
-
-# ============================================================
-# ELIMINAR MENSAJE
-# ============================================================
-@mensajes_bp.route("/eliminar-mensaje/<int:id_mensaje>/<int:id_conversacion>", methods=["POST", "GET"])
-def eliminar_mensaje(id_mensaje, id_conversacion):
-
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("DELETE FROM MENSAJE WHERE ID_MENSAJE = %s", (id_mensaje,))
-    conn.commit()
+    # GET → llenar formulario
+    cursor.execute("SELECT * FROM admin_secretaria WHERE CEDULA=%s", (cedula,))
+    solicitante = cursor.fetchone()
 
     cursor.close()
     conn.close()
 
-    flash("Mensaje eliminado correctamente", "success")
+    return render_template("formularios/secretaria_formulario.html", solicitante=solicitante)
 
-    return redirect(url_for("mensajes_bp.listar_mensajes", id_conversacion=id_conversacion))
-
-
-# ============================================================
-# IMPRIMIR MENSAJES (vista imprimible)
-# ============================================================
-@mensajes_bp.route("/imprimir-mensajes/<int:id_conversacion>")
-def imprimir_mensajes(id_conversacion):
-
-    conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
-
-    cursor.execute("""
-        SELECT * FROM MENSAJE
-        WHERE ID_CONVERSACION = %s
-        ORDER BY Fecha_hora ASC
-    """, (id_conversacion,))
-
-    mensajes = cursor.fetchall()
-
-    cursor.close()
-    conn.close()
-
-    return render_template(
-        "imprimir_mensajes.html",
-        mensajes=mensajes,
-        id_conversacion=id_conversacion
-    )
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////
+        # GET → llenar formulario
+    #cursor.execute("SELECT * FROM admin_secretaria WHERE CEDULA=%s", (cedula,))
+    #solicitante = cursor.fetchone()

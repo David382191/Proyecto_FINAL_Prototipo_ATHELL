@@ -109,6 +109,11 @@
                             <i class="fa-solid fa-pen"></i>
                         </a>
 
+                        <a href="{{ url_for('secretaria_bp.traerinformacion', cedula=s.CEDULA) }}"
+                            class="btn btn-warning btn-sm">
+                            <i class="fa-solid fa-pen"></i>
+                        </a>
+
                         <a href="/eliminar-solicitante/{{ s.CEDULA }}" 
                            class="btn btn-danger btn-sm"
                            onclick="return confirm('¿Seguro que deseas eliminar este solicitante?');">

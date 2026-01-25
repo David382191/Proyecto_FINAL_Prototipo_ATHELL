@@ -6,7 +6,6 @@ from database.db import get_db
 
 secretaria_bp = Blueprint('secretaria_bp', __name__)
 
-
 # ============================================================
 # LISTAR TODAS LAS SECRETARIAS
 # ============================================================
@@ -43,8 +42,6 @@ def lista_secretarias():
         "registros_crud/secretaria_tabla.html",
         secretarias=secretarias
     )
-
-
 # ============================================================
 # 2. BUSCAR SOLICITANTE (por nombre / cedula / tipo)
 # ============================================================
@@ -74,41 +71,42 @@ def buscar_secretaria():
         secretarias=resultados
     )
 
-
 # ============================================================
 # 3. EDITAR SOLICITANTE (GET + POST)
 # ============================================================
-@secretaria_bp.route("/editar-secretaria/<cedula>", methods=["GET", "POST"])
-def editar_solicitante(cedula):
+
+############################################################################################
+############################################################################################
+@secretaria_bp.route("/editar/<cedula>", methods=["GET"])
+def traerinformacion(cedula):
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
 
-    if request.method == "POST":
-        nombre = request.form["nombre"]
-        telefono = request.form["telefono"]
-        tipo = request.form["tipo"]
-
-        sql = """
-            UPDATE admin_secretaria
-            SET Nombre=%s, Telefono=%s, Tipo_solicitante=%s
-            WHERE CEDULA=%s
-        """
-        cursor.execute(sql, (nombre, telefono, tipo, cedula))
-        conn.commit()
-
-        cursor.close()
-        conn.close()
-        return redirect("/solicitantes")
-
     # GET → llenar formulario
     cursor.execute("SELECT * FROM admin_secretaria WHERE CEDULA=%s", (cedula,))
-    solicitante = cursor.fetchone()
+    secretaria_editar = cursor.fetchone()
 
     cursor.close()
     conn.close()
 
-    return render_template("formularios/secretaria_formulario.html", solicitante=solicitante)
+    print("CEDULA RECIBIDA:", cedula)
+    print("SECRETARIA:", secretaria_editar)
 
-
+    return render_template("editables/secretaria_editar.html", secretaria_editar=secretaria_editar)
 ############################################################################################
 ############################################################################################
+# # Bajo    : Christian Reinoso 
+# # Batería : Adolfo Franco
+# # Teclado : Tomás Arevalo
+
+
+#@secretaria_bp.route("/editar-secretaria/<cedula>", methods=["GET", "POST"])
+#def editar_secretaria(cedula):
+#    pass
+############################################################################################
+############################################################################################
+##what does a men who is about to die think.
+##It dopends. How he's going to die. Why he's dying.
+## If he is going to kill himself.
+## He may tought how here's nothing left for him.
+## And hope there is something waiting for him in the other side.

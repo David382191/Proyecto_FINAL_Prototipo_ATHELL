@@ -89,3 +89,8 @@ def eliminar_solicitante(cedula):
 
 #################################################################################################
 #################################################################################################
+##what does a men who is about to die think.
+##It dopends. How he's going to die. Why he's dying.
+## If he is going to kill himself.
+## He may tought how here's nothing left for him.
+## And hope there is something waiting for him in the other side.

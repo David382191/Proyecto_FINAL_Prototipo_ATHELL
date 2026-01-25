@@ -1,5 +1,4 @@
 ################################################################################
-
 from flask import Blueprint, render_template, redirect, url_for
 
 home_bp = Blueprint("home_bp", __name__)
@@ -22,11 +21,6 @@ def panel_administradores():
 @home_bp.route("/conversaciones_tabla")
 def panel_conversaciones():
     return redirect(url_for("conversaciones_bp.listar_conversaciones"))
-
-
-@home_bp.route("/mensajes_tabla")
-def panel_mensajes():
-    return redirect(url_for("mensajes_bp.listar_mensajes"))
 
 
 @home_bp.route("/palabrasclave_tabla")

@@ -105,3 +105,24 @@ def eliminar_solicitante(cedula):
     return redirect("/solicitantes")
 
 #### mecachis, solicitantes y solicitantes son lo mismo, me equivoqué de nombre.
+# ============================================================
+# 5. TRAER INFORMACIÒN SOLICITANTE
+# ============================================================
+@solicitantes_bp.route("/editar/<cedula>", methods=["GET"])
+def traerinformacion(cedula):
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+
+    # GET → llenar formulario
+    cursor.execute("SELECT * FROM SOLICITANTE WHERE CEDULA=%s", (cedula,))
+    secretaria_editar = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    print("CEDULA RECIBIDA:", cedula)
+    print("SECRETARIA:", secretaria_editar)
+
+    return render_template("editables/secretaria_solicitante.html", secretaria_editar=secretaria_editar)
+
+# ============================================================
