@@ -42,7 +42,7 @@ def crear_secretaria():
         cursor.execute("""
             INSERT INTO admin_secretaria
             (CEDULA, Nombre, Apellido, Usuario, Contrasena_hash, Telefono)
-            VALUES (%s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s,%s, %s)
         """, (cedula, nombre, apellido, usuario, contrasena, telefono))
 
         conn.commit()
