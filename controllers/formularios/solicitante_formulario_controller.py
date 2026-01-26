@@ -71,21 +71,7 @@ def guardar_modificacion(cedula):
 
     return redirect("/panel-solicitantes")
 
-# ============================================================
-# 4. ELIMINAR SOLICITANTE
-# ============================================================
-@solicitante_form_bp.route("/eliminar-solicitante/<cedula>")
-def eliminar_solicitante(cedula):
-    conn = get_db()
-    cursor = conn.cursor()
 
-    cursor.execute("DELETE FROM SOLICITANTE WHERE CEDULA=%s", (cedula,))
-    conn.commit()
-
-    cursor.close()
-    conn.close()
-
-    return redirect("/panel-solicitantes")
 
 #################################################################################################
 #################################################################################################

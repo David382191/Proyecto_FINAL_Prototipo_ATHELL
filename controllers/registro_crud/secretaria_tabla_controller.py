@@ -7,7 +7,7 @@ from database.db import get_db
 secretaria_bp = Blueprint('secretaria_bp', __name__)
 
 # ============================================================
-# LISTAR TODAS LAS SECRETARIAS
+# 1. LISTAR TODAS LAS SECRETARIAS
 # ============================================================
 @secretaria_bp.route("/lista_secretarias")
 def lista_secretarias():
@@ -43,7 +43,7 @@ def lista_secretarias():
         secretarias=secretarias
     )
 # ============================================================
-# 2. BUSCAR SOLICITANTE (por nombre / cedula / tipo)
+# 2. BUSCAR SECRETARIA (por nombre / cedula / tipo)
 # ============================================================
 @secretaria_bp.route("/buscar-secretaria")
 def buscar_secretaria():
@@ -71,12 +71,25 @@ def buscar_secretaria():
         secretarias=resultados
     )
 
-# ============================================================
-# 3. EDITAR SOLICITANTE (GET + POST)
-# ============================================================
+# ==========================
+# 3. ELIMINAR SECRETARIA.
+# ==========================
+@secretaria_bp.route("/eliminar-secretaria/<cedula>")
+def eliminar_secretaria(cedula):
+    conn = get_db()
+    cursor = conn.cursor()
 
-############################################################################################
-############################################################################################
+    cursor.execute("DELETE FROM ADMIN_SECRETARIA WHERE CEDULA=%s", (cedula,))
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return redirect("/secretaria_tabla")
+
+# ==========================
+#  4. TRAER INFORMACIÓN DE LA SECRETARIA
+# ==========================
 @secretaria_bp.route("/editar/<cedula>", methods=["GET"])
 def traerinformacion(cedula):
     conn = get_db()
@@ -93,12 +106,10 @@ def traerinformacion(cedula):
     print("SECRETARIA:", secretaria_editar)
 
     return render_template("editables/secretaria_editar.html", secretaria_editar=secretaria_editar)
-############################################################################################
-############################################################################################
 
-
-############################################################################################
-############################################################################################
+# =================================
+#  5. IR A CREAR NUEVA SECRETARIA.
+# =================================
 @secretaria_bp.route("/ir-crear-secretaria", methods=["GET", "POST"])
 def ir_crear_secretaria():
     

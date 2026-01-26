@@ -439,3 +439,41 @@ def editar_solicitante(cedula):
 <a href = "{{ url_for('editar.editarsecretaria') }}"  button type="submit" class="btn btn-primary">
                 Guardar cambios
             </button>
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+# ============================================================
+# 4. ELIMINAR SOLICITANTE
+# ============================================================
+@solicitante_form_bp.route("/eliminar-solicitante/<cedula>")
+def eliminar_solicitante(cedula):
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM SOLICITANTE WHERE CEDULA=%s", (cedula,))
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return redirect("/panel-solicitantes")
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+    @solicitantes_bp.route("/eliminar-solicitante/<cedula>")
+def eliminar_solicitante(cedula):
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM SOLICITANTE WHERE CEDULA=%s", (cedula,))
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return redirect("/solicitantes")

@@ -7,15 +7,14 @@ from database.db import get_db
 secretaria_form_bp = Blueprint("secretaria_form_bp", __name__)
 
 # ==========================
-# MOSTRAR FORMULARIO
+# 1. MOSTRAR FORMULARIO
 # ==========================
 @secretaria_form_bp.route("/nueva-secretaria")
 def nueva_secretaria():
     return render_template("secretaria_formulario.html")
 
-
 # ==========================
-# PROCESAR FORMULARIO
+# 2. PROCESAR FORMULARIO
 # ==========================
 @secretaria_form_bp.route("/crear-secretaria", methods=["GET", "POST"])
 def crear_secretaria():
