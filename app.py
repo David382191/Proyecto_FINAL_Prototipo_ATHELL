@@ -29,7 +29,7 @@ def create_app():
     # -------------- REGISTRO DE BLUEPRINTS -------------- #
 
     # Formularios
-    #app.register_blueprint(secretaria_form_bp)
+    app.register_blueprint(secretaria_form_bp)
     app.register_blueprint(palabrasclave_formulario_bp)
     app.register_blueprint(solicitante_form_bp)
 

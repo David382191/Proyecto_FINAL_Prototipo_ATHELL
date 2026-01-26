@@ -57,36 +57,7 @@ def buscar_solicitante():
 # ============================================================
 # 3. EDITAR SOLICITANTE (GET + POST)
 # ============================================================
-@solicitantes_bp.route("/editar-solicitante/<cedula>", methods=["GET", "POST"])
-def editar_solicitante(cedula):
-    conn = get_db()
-    cursor = conn.cursor(dictionary=True)
 
-    if request.method == "POST":
-        nombre = request.form["nombre"]
-        telefono = request.form["telefono"]
-        tipo = request.form["tipo"]
-
-        sql = """
-            UPDATE SOLICITANTE
-            SET Nombre=%s, Telefono=%s, Tipo_solicitante=%s
-            WHERE CEDULA=%s
-        """
-        cursor.execute(sql, (nombre, telefono, tipo, cedula))
-        conn.commit()
-
-        cursor.close()
-        conn.close()
-        return redirect("/solicitantes")
-
-    # GET → llenar formulario
-    cursor.execute("SELECT * FROM SOLICITANTE WHERE CEDULA=%s", (cedula,))
-    solicitante = cursor.fetchone()
-
-    cursor.close()
-    conn.close()
-
-    return render_template("formularios/solicitante_formulario.html", solicitante=solicitante)
 
 # ============================================================
 # 4. ELIMINAR SOLICITANTE
@@ -108,21 +79,21 @@ def eliminar_solicitante(cedula):
 # ============================================================
 # 5. TRAER INFORMACIÒN SOLICITANTE
 # ============================================================
-@solicitantes_bp.route("/editar/<cedula>", methods=["GET"])
+@solicitantes_bp.route("/editar-solicitante/<cedula>", methods=["GET"])
 def traerinformacion(cedula):
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
 
     # GET → llenar formulario
     cursor.execute("SELECT * FROM SOLICITANTE WHERE CEDULA=%s", (cedula,))
-    secretaria_editar = cursor.fetchone()
+    solicitante_editar = cursor.fetchone()
 
     cursor.close()
     conn.close()
 
     print("CEDULA RECIBIDA:", cedula)
-    print("SECRETARIA:", secretaria_editar)
+    print("SECRETARIA:", solicitante_editar)
 
-    return render_template("editables/secretaria_solicitante.html", secretaria_editar=secretaria_editar)
+    return render_template("editables/solicitante_editar.html", solicitante_editar=solicitante_editar)
 
 # ============================================================

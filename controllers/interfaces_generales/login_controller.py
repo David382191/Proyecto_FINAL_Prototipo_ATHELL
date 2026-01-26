@@ -3,7 +3,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from database.db import get_db
 ###################################################
-login_bp = Blueprint("login", __name__)
+login_bp = Blueprint("login_bp", __name__)
 ###################################################
 ###################################################
 @login_bp.route("/", methods=["GET", "POST"])
@@ -55,10 +55,3 @@ def home():
 ############################
 ##from flask import Blueprint, render_template, session, redirect
 
-##panel = Blueprint("panel", __name__)
-
-##@panel.route("/home")
-##def home():
-##    if "admin_id" not in session:
-##        return redirect("/")
-##    return render_template("home.html")

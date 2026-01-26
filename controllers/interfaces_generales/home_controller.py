@@ -17,11 +17,9 @@ def panel_administradores():
     ##Pero esto de acá tiene que coincidir con el controlador que quierar abrir.
     return redirect(url_for("secretaria_bp.lista_secretarias"))
 
-
 @home_bp.route("/conversaciones_tabla")
 def panel_conversaciones():
     return redirect(url_for("conversaciones_bp.listar_conversaciones"))
-
 
 @home_bp.route("/palabrasclave_tabla")
 def panel_palabras_clave():

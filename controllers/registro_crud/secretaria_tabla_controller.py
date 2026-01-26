@@ -95,13 +95,14 @@ def traerinformacion(cedula):
     return render_template("editables/secretaria_editar.html", secretaria_editar=secretaria_editar)
 ############################################################################################
 ############################################################################################
-# # Bajo    : Christian Reinoso 
-# # Batería : Adolfo Franco
-# # Teclado : Tomás Arevalo
 
 
-#@secretaria_bp.route("/editar-secretaria/<cedula>", methods=["GET", "POST"])
-#def editar_secretaria(cedula):
+############################################################################################
+############################################################################################
+@secretaria_bp.route("/ir-crear-secretaria", methods=["GET", "POST"])
+def ir_crear_secretaria():
+    
+    return render_template("formularios/secretaria_formulario.html")
 #    pass
 ############################################################################################
 ############################################################################################

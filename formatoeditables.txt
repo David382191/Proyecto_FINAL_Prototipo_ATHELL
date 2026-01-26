@@ -47,3 +47,45 @@ def editarsecretaria(cedula):
 
 ###########################################################################
 ###########################################################################
+@solicitantes_bp.route("/editar-solicitante/<cedula>", methods=["GET", "POST"])
+def editar_solicitante(cedula):
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+
+    if request.method == "POST":
+        nombre = request.form["nombre"]
+        telefono = request.form["telefono"]
+        tipo = request.form["tipo"]
+
+        sql = """
+            UPDATE SOLICITANTE
+            SET Nombre=%s, Telefono=%s, Tipo_solicitante=%s
+            WHERE CEDULA=%s
+        """
+        cursor.execute(sql, (nombre, telefono, tipo, cedula))
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+        return redirect("/solicitantes")
+
+    # GET → llenar formulario
+    cursor.execute("SELECT * FROM SOLICITANTE WHERE CEDULA=%s", (cedula,))
+    solicitante = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    return render_template("formularios/solicitante_formulario.html", solicitante=solicitante)
+
+    #################################################################################################
+    ################################################################################################
+    
+        <!-- ===================== -->
+        <!-- FORMULARIO DE NUEVA SOLICITANTE action="/actualizar-Solicitante"
+        <pre>{{ solicitante_editar }}</pre>
+ 
+        <pre>{{ solicitante_editar.CEDULA }}</pre>
+        
+        -->
+        <!-- ===================== -->

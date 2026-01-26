@@ -371,3 +371,71 @@ def editar_secretaria(cedula):
         # GET → llenar formulario
     #cursor.execute("SELECT * FROM admin_secretaria WHERE CEDULA=%s", (cedula,))
     #solicitante = cursor.fetchone()
+
+
+
+    MÁS bOTADEROSA.
+    <a href="/editar-solicitante/{{ s.CEDULA }}" class="btn btn-warning btn-sm">
+        <i class="fa-solid fa-pen"></i>
+    </a>
+
+<a href="{{ url_for('solicitantes_bp.traerinformacion', cedula=s.CEDULA) }}"
+                            class="btn btn-warning btn-sm">
+                            <i class="fa-solid fa-pen"></i>
+                        </a>
+    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////
+                <div class="mb-3">
+                <label>Tipo Solicitante</label>
+                <input type="text" name="Apellido" class="form-control"
+                    value="{{ solicitante_editar['Tipo_solicitante'] }}">
+            </div>
+    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////
+
+    @solicitantes_bp.route("/editar-solicitante/<cedula>", methods=["GET", "POST"])
+def editar_solicitante(cedula):
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+
+    if request.method == "POST":
+        nombre = request.form["nombre"]
+        telefono = request.form["telefono"]
+        tipo = request.form["tipo"]
+
+        sql = """
+            UPDATE SOLICITANTE
+            SET Nombre=%s, Telefono=%s, Tipo_solicitante=%s
+            WHERE CEDULA=%s
+        """
+        cursor.execute(sql, (nombre, telefono, tipo, cedula))
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+        return redirect("/solicitantes")
+
+    # GET → llenar formulario
+    cursor.execute("SELECT * FROM SOLICITANTE WHERE CEDULA=%s", (cedula,))
+    solicitante = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    return render_template("formularios/solicitante_formulario.html", solicitante=solicitante)
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+    ##panel = Blueprint("panel", __name__)
+#login_bp.home
+##@panel.route("/home")
+##def home():
+##    if "admin_id" not in session:
+##        return redirect("/")
+##    return render_template("home.html")
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+<a href = "{{ url_for('editar.editarsecretaria') }}"  button type="submit" class="btn btn-primary">
+                Guardar cambios
+            </button>

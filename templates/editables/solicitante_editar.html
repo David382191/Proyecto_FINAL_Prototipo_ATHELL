@@ -2,7 +2,17 @@
 <!--###########################################################################################-->
 <!DOCTYPE html>
 <html lang="es">
+
+<!-- BOTÓN VOLVER -->
+<a href="{{ url_for('login_bp.home') }}" class="btn btn-secondary">
+        <i class="fa-solid fa-house"></i> Home
+</a>
+
 <head>
+
+ 
+    
+
     <meta charset="UTF-8">
     <title>Editar Solicitante</title>
 
@@ -52,47 +62,46 @@
 
             
             <!-- BOTÓN VOLVER -->
-            <a href="{{ url_for('home_bp.panel_administradores') }}" class="btn btn-secondary">
+            <a href="{{ url_for('home_bp.panel_solicitantes') }}" class="btn btn-secondary">
                 <i class="fa-solid fa-arrow-left"></i> Volveras.
             </a>
 
         </div>
 
-        <!-- ===================== -->
-        <!-- FORMULARIO DE NUEVA SOLICITANTE action="/actualizar-Solicitante"-->
-        <!-- ===================== -->
-        <pre>{{ Solicitante_editar }}</pre>
- 
-        <pre>{{ Solicitante_editar.CEDULA }}</pre>
 
         <form method="POST"
-            action="{{ url_for('editar.editarSolicitante', cedula=Solicitante_editar['CEDULA']) }}">
+            action="{{ url_for('editar.editarsolicitante', cedula=solicitante_editar['CEDULA']) }}">
 
             <div class="mb-3">
                 <label>Nombre</label>
                 <input type="text" name="Nombre" class="form-control"
-                    value="{{ Solicitante_editar['Nombre'] }}">
-            </div>
-
-            <div class="mb-3">
-                <label>Apellido</label>
-                <input type="text" name="Apellido" class="form-control"
-                    value="{{ Solicitante_editar['Apellido'] }}">
+                    value="{{ solicitante_editar['Nombre'] }}">
             </div>
 
             <div class="mb-3">
                 <label>Teléfono</label>
                 <input type="text" name="Telefono" class="form-control"
-                    value="{{ Solicitante_editar['Telefono'] }}">
+                    value="{{ solicitante_editar['Telefono'] }}">
             </div>
 
+            <div class="mb-3"> 
+            <label>Estatus</label>
+            <select name="Cargo" class="form-control">
+                <option value="Persona Desconocida">Persona Desconocida</option>
+                <option value="Estudiante">Estudiante</option>
+                <option value="Maestro">Maestro</option>
+                <option value="Personal Instituto">Personal Instituto</option>
+            </select>
+            </div>
+
+            <div class="mb-4"> 
             <button type="submit" class="btn btn-primary">
                 Guardar cambios
             </button>
+            </div>
 
         </form>
 
-        </form>
 
     </div>
 </div>
