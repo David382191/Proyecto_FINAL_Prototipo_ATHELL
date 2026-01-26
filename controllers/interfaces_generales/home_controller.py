@@ -7,7 +7,7 @@ home_bp = Blueprint("home_bp", __name__)
 def home():
     return render_template('interfaces_generales/home.html')
 ################################################################
-@home_bp.route("/solicitantes_tabla")
+@home_bp.route("/solicitantes_tabla")  
 def panel_solicitantes():
     return redirect(url_for("solicitantes_bp.listar_solicitantes"))
 

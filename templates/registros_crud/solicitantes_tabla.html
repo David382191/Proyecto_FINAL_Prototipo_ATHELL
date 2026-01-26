@@ -78,7 +78,7 @@
             <a href="{{ url_for('solicitantes_bp.home') }}" class="btn btn-secondary">
                 <i class="fa-solid fa-arrow-left"></i>
             </a>
-            
+
         </div>
 
         <!-- ===================== -->
@@ -112,7 +112,7 @@
                             <i class="fa-solid fa-pen"></i> 
                         </a>
 
-                        <a href="/eliminar-solicitante/{{ s.CEDULA }}" 
+                        <a href="{{ url_for('solicitantes_bp.eliminar_solicitante', cedula=s.CEDULA) }}" 
                            class="btn btn-danger btn-sm"
                            onclick="return confirm('¿Seguro que deseas eliminar este solicitante?');">
                             <i class="fa-solid fa-trash"></i>

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect, flash, url_for
 from database.db import get_db
 
 solicitantes_bp = Blueprint("solicitantes_bp", __name__)
@@ -57,37 +57,52 @@ def buscar_solicitante():
 # ============================================================
 # 3. ELIMINAR SOLICITANTE
 # ============================================================
+
 @solicitantes_bp.route("/eliminar-solicitante/<cedula>")
-def registro_tiene_dependencias(conexion, tabla_padre, columna_pk, valor_pk):
-    
-    conn = get_db()
-    cursor = conn.cursor(dictionary=True)
+def eliminar_solicitante(cedula):
 
-    cursor.execute("""
-        SELECT TABLE_NAME, COLUMN_NAME
-        FROM information_schema.KEY_COLUMN_USAGE
-        WHERE REFERENCED_TABLE_NAME = %s
-          AND REFERENCED_COLUMN_NAME = %s
-    """, (tabla_padre, columna_pk))
-
-    dependencias = []
-
-    for fk in cursor.fetchall():
-        cursor.execute(
-            f"SELECT COUNT(*) AS total FROM {fk['TABLE_NAME']} WHERE {fk['COLUMN_NAME']} = %s",
-            (valor_pk,)
+    if not eliminar_solicitante_si_es_posible(cedula):
+        flash(
+            "No se puede eliminar el solicitante porque tiene conversaciones asociadas",
+            "danger"
         )
-        total = cursor.fetchone()["total"]
+        return redirect(url_for("home_bp.panel_solicitantes"))
 
-        if total > 0:
-            dependencias.append({
-                "tabla": fk["TABLE_NAME"],
-                "columna": fk["COLUMN_NAME"],
-                "total": total
-            })
+    flash("Solicitante eliminado correctamente", "success")
+    return redirect(url_for("home_bp.panel_solicitantes"))
 
+#####............................................................
+def eliminar_solicitante_si_es_posible(cedula):
+    print(">>> CEDULA RECIBIDA:", cedula)
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT COUNT(*) FROM CONVERSACION WHERE CEDULA_SOLICITANTE = %s",
+        (cedula,)
+    )
+
+    total = cursor.fetchone()[0]
+    print(">>> CONVERSACIONES:", total)
+
+    if total > 0:
+        cursor.close()
+        conn.close()
+        print(">>> NO SE ELIMINA")
+        return False
+
+    cursor.execute(
+        "DELETE FROM SOLICITANTE WHERE CEDULA = %s",
+        (cedula,)
+    )
+    conn.commit()
+
+    print(">>> ELIMINADO")
     cursor.close()
-    return len(dependencias) > 0, dependencias
+    conn.close()
+    return True
+
 
 #### mecachis, solicitantes y solicitantes son lo mismo, me equivoqué de nombre.
 # ============================================================
