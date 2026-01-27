@@ -21,6 +21,10 @@ def panel_administradores():
 def panel_conversaciones():
     return redirect(url_for("conversaciones_bp.listar_conversaciones"))
 
+@home_bp.route("/mensajes_tabla")
+def panel_mensajes():
+    return redirect(url_for("mensajes_bp.listar_mensajes"))
+
 @home_bp.route("/palabrasclave_tabla")
 def panel_palabras_clave():
     return redirect(url_for("palabras_bp.listar_palabras"))

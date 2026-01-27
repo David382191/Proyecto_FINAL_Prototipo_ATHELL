@@ -1,7 +1,8 @@
 ###################################################################################################
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, Flask
 from werkzeug.security import generate_password_hash
 from database.db import get_db
+import mysql.connector
 
 # Blueprint
 secretaria_form_bp = Blueprint("secretaria_form_bp", __name__)
@@ -53,3 +54,47 @@ def crear_secretaria():
     return render_template("registro_crud/secretaria_tabla_controller.html")
 
 ###################################################################################################
+@secretaria_form_bp.route('/agregar-admin', methods=['POST'])
+def agregar_admin():
+
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+
+
+    cedula = request.form['cedula']
+    nombre = request.form['nombre']
+    apellido = request.form['apellido']
+    usuario = request.form['usuario']
+    contrasena = request.form['contrasena']  # recordar hashear
+    telefono = request.form['telefono']
+
+    # 1️⃣ Validar CEDULA
+    cursor.execute("SELECT COUNT(*) FROM ADMIN_SECRETARIA WHERE CEDULA = %s", (cedula,))
+    (count_cedula,) = cursor.fetchone()
+    if count_cedula > 0:
+        flash("¡Error! Ya existe un admin con esa cédula.", "danger")
+        return redirect("/secretaria_tabla")
+
+    # 2️⃣ Validar USUARIO
+    cursor.execute("SELECT COUNT(*) FROM ADMIN_SECRETARIA WHERE Usuario = %s", (usuario,))
+    (count_usuario,) = cursor.fetchone()
+    if count_usuario > 0:
+        flash("¡Error! El nombre de usuario ya está en uso.", "danger")
+        return redirect("/secretaria_tabla")
+
+    # 3️⃣ Insertar registro si todo está bien
+    cursor.execute("""
+        INSERT INTO ADMIN_SECRETARIA (CEDULA, Nombre, Apellido, Usuario, Contrasena_hash, Telefono)
+        VALUES (%s, %s, %s, %s, %s, %s)
+    """, (cedula, nombre, apellido, usuario, contrasena, telefono))
+    conn.commit()
+
+    flash("Admin agregado correctamente", "success")
+    return redirect("/secretaria_tabla")
+
+#
+# #453b952A631
+
+# Muy importante
+# 486M5CZ1RRR9F1ABEYQAP7TM
+# 486M5CZ1RRR9F1ABEYQAP7TM
