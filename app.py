@@ -1,6 +1,8 @@
 #################################################################################################
 #################################################################################################
 from flask import Flask, redirect, render_template
+##Esta es una nueva librerias, esta de acá abajo.
+import os 
 
 # IMPORTAR BLUEPRINTS (tiene que ser uno por carpeta)
 # ----------------------------- FORMULARIOS -------------------------------------------------#
@@ -53,8 +55,15 @@ def create_app():
 if __name__ == "__main__":
     app = create_app()
     #print(app.url_map)  
-    app.run(debug=True)
+    
+    #esto de aquí es para la nube
+    app = create_app()
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
 #################################################################################################
-#Así ya no dan ganas de suicidarse... aún...pero lo sigo teniendo en la agenda.
+
 #    print("RUTAS REGISTRADAS:")
 #    print(app.url_map)
+# 
+# Recuerda, esto de aquí es para reproducir en local.
+# app.run(debug=True)
