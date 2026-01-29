@@ -10,7 +10,8 @@ def get_db():
             port="5432",
             user="admin",
             password="TU_PASSWORD_REAL",
-            dbname="chatbot_db_z5tb"
+            dbname="chatbot_db_z5tb",
+            sslmode="require"   # 🔑 ESTA LÍNEA
         )
         return connection
 
