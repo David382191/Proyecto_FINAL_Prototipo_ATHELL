@@ -9,7 +9,7 @@ def get_db():
             host="dpg-d5sm0dc9c44c739csnhg-a.oregon-postgres.render.com",
             port="5432",
             user="admin",
-            password="TU_PASSWORD_REAL",
+            password="x9Hw2ZP0vV0LN74kWwSXufApbqhbO2nO",
             dbname="chatbot_db_z5tb",
             sslmode="require"   # 🔑 ESTA LÍNEA
         )
