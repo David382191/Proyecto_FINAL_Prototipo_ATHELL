@@ -91,10 +91,3 @@ def agregar_admin():
 
     flash("Admin agregado correctamente", "success")
     return redirect("/secretaria_tabla")
-
-#
-# #453b952A631
-
-# Muy importante
-# 486M5CZ1RRR9F1ABEYQAP7TM
-# 486M5CZ1RRR9F1ABEYQAP7TM
