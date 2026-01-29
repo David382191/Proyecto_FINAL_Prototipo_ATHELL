@@ -1,25 +1,21 @@
 ######################################################################################
 ######################################################################################
-
-import mysql.connector
-from mysql.connector import Error
+import psycopg2
+from psycopg2 import Error
 
 def get_db():
     try:
-        connection = mysql.connector.connect(
-            host="localhost", 
-            port="3306",
-            user="root",
-            password="12345",
-            database="chatbot_secretaria"
+        connection = psycopg2.connect(
+            host="dpg-d5sm0dc9c44c739csnhg-a.oregon-postgres.render.com",
+            port="5432",
+            user="admin",
+            password="TU_PASSWORD_REAL",
+            dbname="chatbot_db_z5tb"
         )
-
-        if connection.is_connected():
-            return connection
+        return connection
 
     except Error as e:
-        print(f"Error al conectar a la base de datos: {e}")
+        print(f"Error al conectar a PostgreSQL: {e}")
         return None
-
 ######################################################################################
 ######################################################################################
