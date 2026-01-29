@@ -3,19 +3,22 @@
 from flask import Blueprint, render_template, flash, request, redirect
 from mysql.connector import Error
 from database.db import get_db
+from psycopg2.extras import RealDictCursor
 
 secretaria_bp = Blueprint('secretaria_bp', __name__)
 
 # ============================================================
 # 1. LISTAR TODAS LAS SECRETARIAS
 # ============================================================
+
+
 @secretaria_bp.route("/lista_secretarias")
 def lista_secretarias():
     conn = get_db()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
 
     # 1️⃣ ¿Qué base de datos es?
-    cursor.execute("SELECT DATABASE()")
+    cursor.execute("SELECT current_database() AS db")
     print("📌 BASE DE DATOS:", cursor.fetchone())
 
     # 2️⃣ ¿Cuántos registros hay?
@@ -25,11 +28,11 @@ def lista_secretarias():
     # 3️⃣ Traer datos reales
     cursor.execute("""
         SELECT
-            cedula   AS CEDULA,
-            nombre   AS Nombre,
-            apellido AS Apellido,
-            usuario  AS Usuario,
-            telefono AS Telefono
+            cedula   AS "CEDULA",
+            nombre   AS "Nombre",
+            apellido AS "Apellido",
+            usuario  AS "Usuario",
+            telefono AS "Telefono"
         FROM admin_secretaria
     """)
     secretarias = cursor.fetchall()
