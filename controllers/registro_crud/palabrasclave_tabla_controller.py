@@ -1,5 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, flash
 from database.db import get_db
+from psycopg2.extras import RealDictCursor
+from db import get_db
+from psycopg2 import Error
 
 palabras_bp = Blueprint("palabras_bp", __name__)
 
@@ -8,20 +11,32 @@ palabras_bp = Blueprint("palabras_bp", __name__)
 # ======================================================
 @palabras_bp.route("/registros_crud/palabrasclave_tabla")
 def listar_palabras():
-    conn = get_db()
-    cursor = conn.cursor(dictionary=True)
+    conn = None
+    cursor = None
+    palabras = []
 
-    cursor.execute("SELECT * FROM PALABRA_CLAVE")
-    palabras = cursor.fetchall()
+    try:
+        conn = get_db()
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
 
-    cursor.close()
-    conn.close()
+        # Obtener todas las palabras
+        cursor.execute("SELECT * FROM palabra_clave")
+        palabras = cursor.fetchall()
+
+    except Error as e:
+        print(f"Error al listar palabras: {e}")
+        palabras = []
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
     return render_template(
         "registros_crud/palabrasclave_tabla.html",
         palabras=palabras
     )
-
 # ======================================================
 # BUSCAR PALABRAS
 # ======================================================
