@@ -2,10 +2,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from psycopg2 import Error
 from psycopg2.extras import RealDictCursor
 from database.db import get_db
-
-
+# ============================================================
 solicitantes_bp = Blueprint("solicitantes_bp", __name__)
-
 # ============================================================
 @solicitantes_bp.route('/home')
 def home():
@@ -15,30 +13,43 @@ def home():
 def crud_solicitantes():
     return render_template('registros_crud/solicitantes_tabla.html')
 # ============================================================
-
-
-# ============================================================
 # 1. LISTAR SOLICITANTES
 # ============================================================
 @solicitantes_bp.route("/registros_crud/solicitantes_tabla")
 def listar_solicitantes():
-    conn = get_db()
-    cursor = conn.cursor(dictionary=True)
+    conn = None
+    cursor = None
 
-    cursor.execute("SELECT * FROM SOLICITANTE")
-    solicitantes = cursor.fetchall()
+    try:
+        conn = get_db()
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
 
-    cursor.close()
-    conn.close()
+        cursor.execute("""
+            SELECT *
+            FROM solicitante
+        """)
+        solicitantes = cursor.fetchall()
 
-    return render_template("registros_crud/solicitantes_tabla.html", solicitantes=solicitantes)
+    except Error as e:
+        print(f"Error al listar solicitantes: {e}")
+        solicitantes = []
 
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+    return render_template(
+        "registros_crud/solicitantes_tabla.html",
+        solicitantes=solicitantes
+    )
 # ============================================================
 # 2. BUSCAR SOLICITANTE (por nombre / cedula / tipo)
 # ============================================================
 @solicitantes_bp.route("/buscar-solicitante")
 def buscar_solicitante():
-    q = request.args.get("q", "")
+    q = request.args.get("q", "").strip()
 
     conn = None
     cursor = None
@@ -49,9 +60,13 @@ def buscar_solicitante():
         cursor = conn.cursor(cursor_factory=RealDictCursor)
 
         sql = """
-            SELECT * FROM solicitante
-            WHERE cedula LIKE %s OR nombre LIKE %s OR tipo_solicitante LIKE %s
+            SELECT *
+            FROM solicitante
+            WHERE cedula::TEXT        ILIKE %s
+               OR nombre              ILIKE %s
+               OR tipo_solicitante    ILIKE %s
         """
+
         like = f"%{q}%"
         cursor.execute(sql, (like, like, like))
         resultados = cursor.fetchall()
@@ -72,7 +87,6 @@ def buscar_solicitante():
 # ============================================================
 # 3. ELIMINAR SOLICITANTE
 # ============================================================
-
 @solicitantes_bp.route("/eliminar-solicitante/<cedula>")
 def eliminar_solicitante(cedula):
 
@@ -85,22 +99,24 @@ def eliminar_solicitante(cedula):
 
     flash("Solicitante eliminado correctamente", "success")
     return redirect(url_for("home_bp.panel_solicitantes"))
-
 #####............................................................
 def eliminar_solicitante_si_es_posible(cedula):
     print(">>> CEDULA RECIBIDA:", cedula)
 
     conn = None
     cursor = None
+
     try:
         conn = get_db()
-        cursor = conn.cursor()  # no necesitamos RealDictCursor aquí, solo contaremos
+        cursor = conn.cursor()  # COUNT(*) no necesita RealDictCursor
 
-        # Revisar si tiene conversaciones
-        cursor.execute(
-            "SELECT COUNT(*) FROM conversacion WHERE cedula_solicitante = %s",
-            (cedula,)
-        )
+        # Verificar si tiene conversaciones asociadas
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM conversacion
+            WHERE cedula_solicitante = %s
+        """, (cedula,))
+
         total = cursor.fetchone()[0]
         print(">>> CONVERSACIONES:", total)
 
@@ -109,15 +125,18 @@ def eliminar_solicitante_si_es_posible(cedula):
             return False
 
         # Eliminar solicitante
-        cursor.execute(
-            "DELETE FROM solicitante WHERE cedula = %s",
-            (cedula,)
-        )
+        cursor.execute("""
+            DELETE FROM solicitante
+            WHERE cedula = %s
+        """, (cedula,))
+
         conn.commit()
         print(">>> ELIMINADO")
         return True
 
     except Error as e:
+        if conn:
+            conn.rollback()
         print(f"Error al eliminar solicitante: {e}")
         return False
 
@@ -126,7 +145,6 @@ def eliminar_solicitante_si_es_posible(cedula):
             cursor.close()
         if conn:
             conn.close()
-
 # ============================================================
 # 5. TRAER INFORMACIÒN SOLICITANTE
 # ============================================================
@@ -141,7 +159,12 @@ def traerinformacion(cedula):
         cursor = conn.cursor(cursor_factory=RealDictCursor)
 
         # GET → llenar formulario
-        cursor.execute("SELECT * FROM solicitante WHERE cedula = %s", (cedula,))
+        cursor.execute("""
+            SELECT *
+            FROM solicitante
+            WHERE cedula = %s
+        """, (cedula,))
+
         solicitante_editar = cursor.fetchone()
 
     except Error as e:

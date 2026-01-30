@@ -4,14 +4,12 @@ from flask import Blueprint, render_template, flash, request, redirect
 from mysql.connector import Error
 from database.db import get_db
 from psycopg2.extras import RealDictCursor
-
+from psycopg2 import Error
+# ============================================================
 secretaria_bp = Blueprint('secretaria_bp', __name__)
-
 # ============================================================
 # 1. LISTAR TODAS LAS SECRETARIAS
 # ============================================================
-
-
 @secretaria_bp.route("/lista_secretarias")
 def lista_secretarias():
     conn = get_db()
@@ -50,66 +48,110 @@ def lista_secretarias():
 # ============================================================
 @secretaria_bp.route("/buscar-secretaria")
 def buscar_secretaria():
-    q = request.args.get("q", "")
+    q = request.args.get("q", "").strip()
 
-    conn = get_db()
-    cursor = conn.cursor(dictionary=True)
+    conn = None
+    cursor = None
 
-    sql = """
-        SELECT * FROM admin_secretaria
-        WHERE cedula LIKE %s
-           OR nombre LIKE %s
-           OR apellido LIKE %s
-    """
+    try:
+        conn = get_db()
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
 
-    like = f"%{q}%"
-    cursor.execute(sql, (like, like, like))
-    resultados = cursor.fetchall()
+        sql = """
+            SELECT *
+            FROM admin_secretaria
+            WHERE cedula   ILIKE %s
+               OR nombre   ILIKE %s
+               OR apellido ILIKE %s
+        """
 
-    cursor.close()
-    conn.close()
+        like = f"%{q}%"
+        cursor.execute(sql, (like, like, like))
+        resultados = cursor.fetchall()
+
+    except Error as e:
+        print(f"Error al buscar secretarias: {e}")
+        resultados = []
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
     return render_template(
         "registros_crud/secretaria_tabla.html",
         secretarias=resultados
     )
-
 # ==========================
 # 3. ELIMINAR SECRETARIA.
 # ==========================
 @secretaria_bp.route("/eliminar-secretaria/<cedula>")
 def eliminar_secretaria(cedula):
-    conn = get_db()
-    cursor = conn.cursor()
+    conn = None
+    cursor = None
 
-    cursor.execute("DELETE FROM ADMIN_SECRETARIA WHERE CEDULA=%s", (cedula,))
-    conn.commit()
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
 
-    cursor.close()
-    conn.close()
+        cursor.execute("""
+            DELETE FROM admin_secretaria
+            WHERE cedula = %s
+        """, (cedula,))
+
+        conn.commit()
+
+    except Error as e:
+        if conn:
+            conn.rollback()
+        print(f"Error al eliminar secretaria: {e}")
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
     return redirect("/secretaria_tabla")
-
 # ==========================
 #  4. TRAER INFORMACIÓN DE LA SECRETARIA
 # ==========================
 @secretaria_bp.route("/editar/<cedula>", methods=["GET"])
 def traerinformacion(cedula):
-    conn = get_db()
-    cursor = conn.cursor(dictionary=True)
+    conn = None
+    cursor = None
 
-    # GET → llenar formulario
-    cursor.execute("SELECT * FROM admin_secretaria WHERE CEDULA=%s", (cedula,))
-    secretaria_editar = cursor.fetchone()
+    try:
+        conn = get_db()
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
 
-    cursor.close()
-    conn.close()
+        # GET → llenar formulario
+        cursor.execute("""
+            SELECT *
+            FROM admin_secretaria
+            WHERE cedula = %s
+        """, (cedula,))
 
-    print("CEDULA RECIBIDA:", cedula)
-    print("SECRETARIA:", secretaria_editar)
+        secretaria_editar = cursor.fetchone()
 
-    return render_template("editables/secretaria_editar.html", secretaria_editar=secretaria_editar)
+        print("CEDULA RECIBIDA:", cedula)
+        print("SECRETARIA:", secretaria_editar)
 
+    except Error as e:
+        print(f"Error al obtener secretaria: {e}")
+        secretaria_editar = None
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+    return render_template(
+        "editables/secretaria_editar.html",
+        secretaria_editar=secretaria_editar
+    )
 # =================================
 #  5. IR A CREAR NUEVA SECRETARIA.
 # =================================

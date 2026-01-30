@@ -43,29 +43,42 @@ def listar_palabras():
 def buscar_palabras():
     query = request.args.get("q", "")
 
-    conn = get_db()
-    cursor = conn.cursor()
+    conn = None
+    cursor = None
 
-    cursor.execute("""
-        SELECT * FROM PALABRA_CLAVE
-        WHERE Palabra LIKE %s OR Descripcion LIKE %s
-    """, (f"%{query}%", f"%{query}%"))
+    try:
+        conn = get_db()
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
 
-    palabras = cursor.fetchall()
-    conn.close()
+        cursor.execute("""
+            SELECT *
+            FROM palabra_clave
+            WHERE palabra ILIKE %s
+               OR descripcion ILIKE %s
+        """, (f"%{query}%", f"%{query}%"))
 
-    return render_template("registros_crud/palabrasclave_tabla.html", palabras=palabras)
+        palabras = cursor.fetchall()
 
+    except Error as e:
+        print(f"Error al buscar palabras clave: {e}")
+        palabras = []
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+    return render_template(
+        "registros_crud/palabrasclave_tabla.html",
+        palabras=palabras
+    )
 # ======================================================
 # FORMULARIO CREAR
 # ======================================================
-
-###Ojos, Roberto. Con esto de acá se le pone nombre y dirección
-# a esta cochinada de archvio.
 @palabras_bp.route("/palabras_clave", methods=["GET"])
 def mostrar_tabla_palabras():
     return render_template("registros_crud/palabrasclave_tabla.html")
-
 # ======================================================
 # PROCESAR CREACIÓN
 # ======================================================
@@ -75,33 +88,66 @@ def guardar_palabra():
     descripcion = request.form["Descripcion"]
     respuesta = request.form["Respuesta_designada"]
 
-    conn = get_db()
-    cursor = conn.cursor()
+    conn = None
+    cursor = None
 
-    cursor.execute("""
-        INSERT INTO PALABRA_CLAVE (Palabra, Descripcion, Respuesta_designada)
-        VALUES (%s, %s, %s)
-    """, (palabra, descripcion, respuesta))
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
 
-    conn.commit()
-    conn.close()
+        cursor.execute("""
+            INSERT INTO palabra_clave (palabra, descripcion, respuesta_designada)
+            VALUES (%s, %s, %s)
+        """, (palabra, descripcion, respuesta))
+
+        conn.commit()
+
+    except Error as e:
+        if conn:
+            conn.rollback()
+        print(f"Error al guardar palabra clave: {e}")
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
     return redirect("/palabras")
-
 # ======================================================
 # FORMULARIO EDITAR
 # ======================================================
 @palabras_bp.route("/editar-palabra/<int:id_pc>")
 def editar_palabra(id_pc):
-    conn = get_db()
-    cursor = conn.cursor()
+    conn = None
+    cursor = None
 
-    cursor.execute("SELECT * FROM PALABRA_CLAVE WHERE ID_PC = %s", (id_pc,))
-    palabra = cursor.fetchone()
-    conn.close()
+    try:
+        conn = get_db()
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
 
-    return render_template("editar_palabra.html", palabra=palabra)
+        cursor.execute("""
+            SELECT *
+            FROM palabra_clave
+            WHERE id_pc = %s
+        """, (id_pc,))
 
+        palabra = cursor.fetchone()
+
+    except Error as e:
+        print(f"Error al obtener palabra clave: {e}")
+        palabra = None
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+    return render_template(
+        "editar_palabra.html",
+        palabra=palabra
+    )
 # ======================================================
 # PROCESAR EDICIÓN
 # ======================================================
@@ -111,30 +157,64 @@ def actualizar_palabra(id_pc):
     descripcion = request.form["Descripcion"]
     respuesta = request.form["Respuesta_designada"]
 
-    conn = get_db()
-    cursor = conn.cursor()
+    conn = None
+    cursor = None
 
-    cursor.execute("""
-        UPDATE PALABRA_CLAVE
-        SET Palabra=%s, Descripcion=%s, Respuesta_designada=%s
-        WHERE ID_PC=%s
-    """, (palabra, descripcion, respuesta, id_pc))
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
 
-    conn.commit()
-    conn.close()
+        cursor.execute("""
+            UPDATE palabra_clave
+            SET palabra = %s,
+                descripcion = %s,
+                respuesta_designada = %s
+            WHERE id_pc = %s
+        """, (palabra, descripcion, respuesta, id_pc))
+
+        conn.commit()
+
+    except Error as e:
+        if conn:
+            conn.rollback()
+        print(f"Error al actualizar palabra clave: {e}")
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
     return redirect("/palabras")
-
 # ======================================================
 # ELIMINAR
 # ======================================================
 @palabras_bp.route("/eliminar-palabra/<int:id_pc>")
 def eliminar_palabra(id_pc):
-    conn = get_db()
-    cursor = conn.cursor()
+    conn = None
+    cursor = None
 
-    cursor.execute("DELETE FROM PALABRA_CLAVE WHERE ID_PC = %s", (id_pc,))
-    conn.commit()
-    conn.close()
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            DELETE FROM palabra_clave
+            WHERE id_pc = %s
+        """, (id_pc,))
+
+        conn.commit()
+
+    except Error as e:
+        if conn:
+            conn.rollback()
+        print(f"Error al eliminar palabra clave: {e}")
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
     return redirect("/palabras")
+#################################################################################################
