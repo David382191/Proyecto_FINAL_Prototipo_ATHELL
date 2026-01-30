@@ -1,5 +1,8 @@
-from flask import Blueprint, render_template, request, redirect, flash, url_for
-from database.db import get_db
+from flask import request, render_template
+from psycopg2 import Error
+from psycopg2.extras import RealDictCursor
+from db import get_db  # tu función adaptada a Postgres
+
 
 solicitantes_bp = Blueprint("solicitantes_bp", __name__)
 
@@ -37,23 +40,35 @@ def listar_solicitantes():
 def buscar_solicitante():
     q = request.args.get("q", "")
 
-    conn = get_db()
-    cursor = conn.cursor(dictionary=True)
+    conn = None
+    cursor = None
+    resultados = []
 
-    sql = """
-        SELECT * FROM SOLICITANTE
-        WHERE CEDULA LIKE %s OR Nombre LIKE %s OR Tipo_solicitante LIKE %s
-    """
-    
-    like = f"%{q}%"
-    cursor.execute(sql, (like, like, like))
-    resultados = cursor.fetchall()
+    try:
+        conn = get_db()
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
 
-    cursor.close()
-    conn.close()
+        sql = """
+            SELECT * FROM solicitante
+            WHERE cedula LIKE %s OR nombre LIKE %s OR tipo_solicitante LIKE %s
+        """
+        like = f"%{q}%"
+        cursor.execute(sql, (like, like, like))
+        resultados = cursor.fetchall()
 
-    return render_template("registros_crud/solicitantes_tabla.html", solicitantes=resultados)
+    except Error as e:
+        print(f"Error al buscar solicitantes: {e}")
 
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+    return render_template(
+        "registros_crud/solicitantes_tabla.html",
+        solicitantes=resultados
+    )
 # ============================================================
 # 3. ELIMINAR SOLICITANTE
 # ============================================================
@@ -75,54 +90,74 @@ def eliminar_solicitante(cedula):
 def eliminar_solicitante_si_es_posible(cedula):
     print(">>> CEDULA RECIBIDA:", cedula)
 
-    conn = get_db()
-    cursor = conn.cursor()
+    conn = None
+    cursor = None
+    try:
+        conn = get_db()
+        cursor = conn.cursor()  # no necesitamos RealDictCursor aquí, solo contaremos
 
-    cursor.execute(
-        "SELECT COUNT(*) FROM CONVERSACION WHERE CEDULA_SOLICITANTE = %s",
-        (cedula,)
-    )
+        # Revisar si tiene conversaciones
+        cursor.execute(
+            "SELECT COUNT(*) FROM conversacion WHERE cedula_solicitante = %s",
+            (cedula,)
+        )
+        total = cursor.fetchone()[0]
+        print(">>> CONVERSACIONES:", total)
 
-    total = cursor.fetchone()[0]
-    print(">>> CONVERSACIONES:", total)
+        if total > 0:
+            print(">>> NO SE ELIMINA")
+            return False
 
-    if total > 0:
-        cursor.close()
-        conn.close()
-        print(">>> NO SE ELIMINA")
+        # Eliminar solicitante
+        cursor.execute(
+            "DELETE FROM solicitante WHERE cedula = %s",
+            (cedula,)
+        )
+        conn.commit()
+        print(">>> ELIMINADO")
+        return True
+
+    except Error as e:
+        print(f"Error al eliminar solicitante: {e}")
         return False
 
-    cursor.execute(
-        "DELETE FROM SOLICITANTE WHERE CEDULA = %s",
-        (cedula,)
-    )
-    conn.commit()
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
-    print(">>> ELIMINADO")
-    cursor.close()
-    conn.close()
-    return True
-
-
-#### mecachis, solicitantes y solicitantes son lo mismo, me equivoqué de nombre.
 # ============================================================
 # 5. TRAER INFORMACIÒN SOLICITANTE
 # ============================================================
 @solicitantes_bp.route("/editar-solicitante/<cedula>", methods=["GET"])
 def traerinformacion(cedula):
-    conn = get_db()
-    cursor = conn.cursor(dictionary=True)
+    conn = None
+    cursor = None
+    solicitante_editar = None
 
-    # GET → llenar formulario
-    cursor.execute("SELECT * FROM SOLICITANTE WHERE CEDULA=%s", (cedula,))
-    solicitante_editar = cursor.fetchone()
+    try:
+        conn = get_db()
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
 
-    cursor.close()
-    conn.close()
+        # GET → llenar formulario
+        cursor.execute("SELECT * FROM solicitante WHERE cedula = %s", (cedula,))
+        solicitante_editar = cursor.fetchone()
+
+    except Error as e:
+        print(f"Error al traer información del solicitante: {e}")
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
     print("CEDULA RECIBIDA:", cedula)
-    print("SECRETARIA:", solicitante_editar)
+    print("SOLICITANTE:", solicitante_editar)
 
-    return render_template("editables/solicitante_editar.html", solicitante_editar=solicitante_editar)
-
+    return render_template(
+        "editables/solicitante_editar.html",
+        solicitante_editar=solicitante_editar
+    )
 # ============================================================
