@@ -1,7 +1,7 @@
 from flask import request, render_template
 from psycopg2 import Error
 from psycopg2.extras import RealDictCursor
-from db import get_db  # tu función adaptada a Postgres
+from database.db import get_db
 
 
 solicitantes_bp = Blueprint("solicitantes_bp", __name__)

@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, flash
-from database.db import get_db
 from psycopg2.extras import RealDictCursor
-from db import get_db
+from database.db import get_db
 from psycopg2 import Error
 
 palabras_bp = Blueprint("palabras_bp", __name__)
