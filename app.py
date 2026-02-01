@@ -29,6 +29,14 @@ from controllers.editables.editar import editar
 # ----------------------- Eliminables ----------------------------------------------#
 from controllers.eliminables.eliminar import eliminar_bp
 
+# ----------------------- Buscadores ----------------------------------------------#
+from controllers.buscadores.buscar import buscar_bp
+
+# ----------------------- BOT ----------------------------------------------#
+from IA_BOT.ia_bot import bot_bp
+
+
+
 
 #################################################################################################
 
@@ -58,8 +66,17 @@ def create_app():
     #Editar
     app.register_blueprint(editar)
 
-    #Editar
+    #Eliminar
     app.register_blueprint(eliminar_bp)
+
+    #Buscar
+    app.register_blueprint(buscar_bp)
+
+    #IA CHAT-BOT
+    app.register_blueprint(bot_bp)
+
+
+
     return app
 
 app = create_app()

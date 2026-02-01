@@ -71,7 +71,7 @@ def traerinformacion(id_entrada):
             conn.close()
 
     return render_template(
-        "editables/entradasdiario_editar.html",
+        "registro_crud/entradasdiario_tabla_controller.html",
         entradasdiario_editar=entradasdiario_editar
     )
 ###################################################################################################

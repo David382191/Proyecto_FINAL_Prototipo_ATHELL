@@ -11,7 +11,7 @@ def buscar_entrada():
 
     conn = None
     cursor = None
-    resultados = []
+    entradas = []
 
     try:
         conn = get_db()
@@ -19,18 +19,18 @@ def buscar_entrada():
 
         sql = """
             SELECT *
-            FROM solicitante
-            WHERE cedula::TEXT        ILIKE %s
-               OR nombre              ILIKE %s
-               OR tipo_solicitante    ILIKE %s
+            FROM diario_entrada
+            WHERE id_entrada  ILIKE %s
+               OR estado      ILIKE %s
+               OR titulo      ILIKE %s
         """
 
         like = f"%{q}%"
         cursor.execute(sql, (like, like, like))
-        resultados = cursor.fetchall()
+        entradas = cursor.fetchall()
 
     except Error as e:
-        print(f"Error al buscar solicitantes: {e}")
+        print(f"Error al buscar entradas: {e}")
 
     finally:
         if cursor:
@@ -38,7 +38,13 @@ def buscar_entrada():
         if conn:
             conn.close()
 
+    print(entradas)
     return render_template(
-        "registros_crud/solicitantes_tabla.html",
-        solicitantes=resultados
+        "registros_crud/entradasdiario_tabla.html",
+        entradas=entradas
     )
+# ======================================================================================
+
+
+
+# ======================================================================================
