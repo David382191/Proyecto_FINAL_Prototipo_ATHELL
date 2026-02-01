@@ -150,6 +150,8 @@ def eliminar_solicitante_si_es_posible(cedula):
 # ============================================================
 @solicitantes_bp.route("/editar-solicitante/<cedula>", methods=["GET"])
 def traerinformacion(cedula):
+
+    print("Hola")
     conn = None
     cursor = None
     solicitante_editar = None

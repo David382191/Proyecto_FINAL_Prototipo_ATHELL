@@ -2,102 +2,46 @@
 ################################################################################################
 from flask import Blueprint, render_template, request, redirect, flash
 from database.db import get_db
+from database.db import get_db
+from psycopg2.extras import RealDictCursor
+from psycopg2 import Error
 
 palabrasclave_formulario_bp = Blueprint("palabrasclave_formulario_bp",__name__)
 
 # ======================================================
-# 1. FORMULARIO DE CREACIÓN
+# 2. TRAER INFORMACION DE EDICIÓN
 # ======================================================
-@palabrasclave_formulario_bp.route("/crear-palabra", methods=["GET"])
-def mostrar_formulario_palabra():
-    return render_template("formularios/palabrasclave_formulario.html")
-
-@palabrasclave_formulario_bp.route("/crear-palabra", methods=["POST"])
-def procesar_formulario_palabra():
-    palabra = request.form.get("palabra")
-    descripcion = request.form.get("descripcion")
-    respuesta = request.form.get("respuesta")
-
-    if not palabra or not descripcion or not respuesta:
-        flash("Todos los campos son obligatorios.", "danger")
-        return redirect("/crear-palabra")
-
-    conn = get_db()
-    cursor = conn.cursor()
+@palabrasclave_formulario_bp.route("/editar-palabraclave/<id_pc>", methods=["GET"])
+def traerinformacion(id_pc):
+    conn = None
+    cursor = None
 
     try:
+        conn = get_db()
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+
+        # GET → llenar formulario
         cursor.execute("""
-            INSERT INTO PALABRA_CLAVE (Palabra, Descripcion, Respuesta_designada)
-            VALUES (%s, %s, %s);
-        """, (palabra, descripcion, respuesta))
+            SELECT *
+            FROM palabra_clave
+            WHERE id_pc = %s
+        """, (id_pc,))
 
-        conn.commit()
-        flash("Palabra clave creada correctamente.", "success")
+        pc_editar = cursor.fetchone()
 
-    except Exception as e:
-        flash(f"Error al crear: {e}", "danger")
+    except Error as e:
+        print(f"Error al obtener secretaria: {e}")
+        pc_editar = None
 
     finally:
-        conn.close()
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
-    return redirect("/palabras-clave")
-
-
-# ======================================================
-# 2. FORMULARIO DE EDICIÓN
-# ======================================================
-
-@palabrasclave_formulario_bp.route("/editar-palabra/<int:id>", methods=["GET"])
-def mostrar_formulario_editar_palabra(id):
-    """
-    Muestra el formulario de edición con los datos cargados.
-    """
-    conn = get_db()
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT * FROM PALABRA_CLAVE WHERE ID = %s", (id,))
-    palabra = cursor.fetchone()
-
-    conn.close()
-
-    if not palabra:
-        flash("La palabra clave no existe.", "danger")
-        return redirect("/palabras-clave")
-
-    return render_template("formularios/palabrasclave_editar.html", palabra=palabra)
-
-
-@palabrasclave_formulario_bp.route("/editar-palabra/<int:id>", methods=["POST"])
-def procesar_edicion_palabra(id):
-    """
-    Procesa los cambios del formulario de edición.
-    """
-    palabra = request.form.get("palabra")
-    descripcion = request.form.get("descripcion")
-    respuesta = request.form.get("respuesta")
-
-    conn = get_db()
-    cursor = conn.cursor()
-
-    try:
-        cursor.execute("""
-            UPDATE PALABRA_CLAVE
-            SET Palabra = %s,
-                Descripcion = %s,
-                Respuesta_designada = %s
-            WHERE ID = %s;
-        """, (palabra, descripcion, respuesta, id))
-
-        conn.commit()
-        flash("Cambios guardados correctamente.", "success")
-
-    except Exception as e:
-        flash(f"Error al actualizar: {e}", "danger")
-
-    finally:
-        conn.close()
-
-    return redirect("/palabras-clave")
-
+    return render_template(
+        "editables/palabrasclave_editar.html",
+        pc_editar=pc_editar
+    )
 ################################################################################################
 ################################################################################################

@@ -32,4 +32,9 @@ def panel_palabras_clave():
 @home_bp.route("/salir")
 def salir():
     return render_template("interfaces_generales/login.html")
+
+@home_bp.route("/entradasdiario")
+def entradasdiario():
+    return redirect(url_for("diario_bp.listar_diario_tabla"))
+
 ################################################################################

@@ -101,16 +101,16 @@
                 <tbody>
                 {% for m in m %}
                 <tr>
-                    <td>{{ m.ID_MENSAJE }}</td>
-                    <td>{{ m.ID_CONVERSACION }}</td>
-                    <td>{{ m.Remitente }}</td>
-                    <td>{{ m.Contenido }}</td>
-                    <td>{{ m.Fecha_hora }}</td>
+                    <td>{{ m.id_mensaje }}</td>
+                    <td>{{ m.id_conversacion }}</td>
+                    <td>{{ m.remitente }}</td>
+                    <td>{{ m.contenido }}</td>
+                    <td>{{ m.fecha_hora }}</td>
 
                     <!-- ACCIONES -->
                     <td class="d-flex gap-2">
                         <!-- Eliminar -->
-                        <a href="/eliminar-mensaje/{{ m.ID_MENSAJE }}" 
+                        <a href="/eliminar-mensaje/{{ m.id_mensaje }}" 
                            class="btn btn-danger btn-sm">
                             <i class="fa-solid fa-trash"></i>
                         </a>

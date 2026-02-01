@@ -13,7 +13,7 @@ def panel_solicitantes():
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
 
-    cursor.execute("SELECT * FROM SOLICITANTE")
+    cursor.execute("SELECT * FROM solicitante")
     solicitantes = cursor.fetchall()
 
     cursor.close()
@@ -33,7 +33,7 @@ def mostrar_modificacion(cedula):
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
 
-    cursor.execute("SELECT * FROM SOLICITANTE WHERE CEDULA=%s", (cedula,))
+    cursor.execute("SELECT * FROM solicitante WHERE cedula=%s", (cedula,))
     solicitante = cursor.fetchone()
 
     cursor.close()
@@ -43,22 +43,21 @@ def mostrar_modificacion(cedula):
         "formularios/modificar_solicitante.html",  # usa tu HTML
         solicitante=solicitante
     )
-
 # ============================================================
 # 3. GUARDAR CAMBIOS DE SOLICITANTE
 # ============================================================
 @solicitante_form_bp.route("/modificar-solicitante/<cedula>", methods=["POST"])
 def guardar_modificacion(cedula):
-    nombre = request.form["Nombre"]
-    telefono = request.form["Telefono"]
-    tipo = request.form["Tipo_solicitante"]
+    nombre = request.form["nombre"]
+    telefono = request.form["telefono"]
+    tipo = request.form["tipo_solicitante"]
 
     conn = get_db()
     cursor = conn.cursor()
 
     sql = """
         UPDATE SOLICITANTE
-        SET Nombre=%s, Telefono=%s, Tipo_solicitante=%s
+        SET nombre=%s, telefono=%s, tipo_solicitante=%s
         WHERE CEDULA=%s
     """
 
@@ -69,9 +68,6 @@ def guardar_modificacion(cedula):
     conn.close()
 
     return redirect("/panel-solicitantes")
-
-
-
 #################################################################################################
 #################################################################################################
 ##what does a men who is about to die think.

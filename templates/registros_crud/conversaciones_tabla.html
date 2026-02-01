@@ -104,15 +104,15 @@
                 <tbody>
                 {% for c in conversaciones %}
                 <tr>
-                    <td>{{ c.ID_CONVERSACION }}</td>
-                    <td>{{ c.Fecha_inicio }}</td>
-                    <td>{{ c.Fecha_fin }}</td>
-                    <td>{{ c.CEDULA_SOLICITANTE }}</td>
+                    <td>{{ c.id_conversacion }}</td>
+                    <td>{{ c.fecha_inicio }}</td>
+                    <td>{{ c.fecha_fin }}</td>
+                    <td>{{ c.cedula_solicitante }}</td>
 
                     <!-- ACCIONES -->
                     <td class="d-flex gap-2">
                         <!-- Imprimir -->
-                        <a href="/imprimir-conversacion/{{ c.ID_Conversacion }}" 
+                        <a href="/imprimir-conversacion/{{ c.id_conversacion }}" 
                            class="btn btn-secondary btn-sm">
                             <i class="fa-solid fa-print"></i>
                         </a>

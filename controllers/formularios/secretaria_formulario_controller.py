@@ -33,12 +33,12 @@ def crear_secretaria():
         if request.method == "POST":
 
             # 🔴 VALIDACIÓN
-            cedula = request.form.get("CEDULA", "").strip()
-            nombre = request.form.get("Nombre", "").strip()
-            apellido = request.form.get("Apellido", "").strip()
-            usuario = request.form.get("Usuario", "").strip()
-            contrasena = request.form.get("Contrasena_hash", "").strip()
-            telefono = request.form.get("Telefono", "").strip()
+            cedula = request.form.get("cedula", "").strip()
+            nombre = request.form.get("nombre", "").strip()
+            apellido = request.form.get("apellido", "").strip()
+            usuario = request.form.get("usuario", "").strip()
+            contrasena = request.form.get("contrasena_hash", "").strip()
+            telefono = request.form.get("telefono", "").strip()
 
             if not cedula or not nombre or not apellido or not usuario or not telefono:
                 flash("Todos los campos son obligatorios", "danger")

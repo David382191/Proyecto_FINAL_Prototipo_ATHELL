@@ -146,15 +146,15 @@
                 <tbody>
                     {% for p in palabras %}
                     <tr>
-                        <td>{{ p.ID_PC }}</td>
-                        <td>{{ p.Palabra }}</td>
-                        <td>{{ p.Descripcion }}</td>
-                        <td>{{ p.Respuesta_designada }}</td>
+                        <td>{{ p.id_pc }}</td>
+                        <td>{{ p.palabra }}</td>
+                        <td>{{ p.descripcion }}</td>
+                        <td>{{ p.respuesta_designada }}</td>
                         <td>
-                            <a href="/editar-palabra/{{ p.ID_PC }}" class="btn btn-action btn-edit">
+                            <a href="/editar-palabraclave/{{ p.id_pc }}" class="btn btn-action btn-edit">
                                 <i class="fa-solid fa-pen"></i> Editar
                             </a>
-                            <a href="/eliminar-palabra/{{ p.ID_PC }}" 
+                            <a href="/eliminar-palabra/{{ p.id_pc }}" 
                                class="btn btn-action btn-delete"
                                onclick="return confirm('¿Seguro que deseas eliminar este registro?');">
                                 <i class="fa-solid fa-trash"></i> Eliminar

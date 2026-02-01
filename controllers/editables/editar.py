@@ -110,3 +110,105 @@ def editarsolicitante(cedula):
         solicitante_editar=solicitante_editar
     )
 ######################################################################################
+@editar.route("/editar-palabrasclave/<id_pc>", methods=["GET", "POST"])
+def editar_pc(id_pc):
+    conn = None
+    cursor = None
+    pc_editar = None
+
+    try:
+        conn = get_db()
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+
+        if request.method == "POST":
+            palabra = request.form["palabra"]
+            descripcion = request.form["descripcion"]
+            respuesta_designada = request.form["respuesta_designada"]
+
+            cursor.execute("""
+                UPDATE palabra_clave
+                SET palabra            = %s,
+                    descripcion  = %s,
+                    respuesta_designada          = %s
+                WHERE id_pc = %s
+            """, (palabra, descripcion, respuesta_designada, id_pc))
+
+            conn.commit()
+            return redirect(url_for("home_bp.panel_palabras_clave"))
+
+        # GET → cargar datos
+        cursor.execute("""
+            SELECT *
+            FROM palabra_clave
+            WHERE id_pc = %s
+        """, (id_pc,))
+
+        pc_editar = cursor.fetchone()
+
+    except Error as e:
+        if conn:
+            conn.rollback()
+        print(f"Error al editar Palabra Clave: {e}")
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+    return render_template(
+        "registros_crud/palabrasclave_tabla.html",
+        pc_editar=pc_editar
+    )
+######################################################################################
+@editar.route("/editar-entradasdiario/<id_entrada>", methods=["GET", "POST"])
+def editar_entradadiario(id_entrada):
+    conn = None
+    cursor = None
+    entrada_editar = None
+
+    try:
+        conn = get_db()
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+
+        if request.method == "POST":
+            titulo = request.form["titulo"]
+            contenido = request.form["contenido"]
+            estado = request.form["estado"]
+
+            cursor.execute("""
+                UPDATE diario_entrada
+                SET titulo            = %s,
+                    contenido  = %s,
+                    estado          = %s
+                WHERE id_entrada = %s
+            """, (titulo, contenido, estado, id_entrada))
+
+            conn.commit()
+            return redirect(url_for("home_bp.entradasdiario"))
+
+        # GET → cargar datos
+        cursor.execute("""
+            SELECT *
+            FROM diario_entrada
+            WHERE id_entrada = %s
+        """, (id_entrada,))
+
+        entrada_editar = cursor.fetchone()
+
+    except Error as e:
+        if conn:
+            conn.rollback()
+        print(f"Error al editar Palabra Clave: {e}")
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+    return render_template(
+        "registros_crud/entradasdiario_tabla.html",
+        entrada_editar=entrada_editar
+    )
+######################################################################################

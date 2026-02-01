@@ -1,0 +1,244 @@
+CREATE TYPE remitente_enum AS ENUM ('usuario', 'bot', 'admin');
+
+--------------------------------------------------------
+-- 1. TABLA: SOLICITANTE
+--------------------------------------------------------
+CREATE TABLE solicitante (
+    cedula VARCHAR(20) PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    telefono VARCHAR(20),
+    tipo_solicitante VARCHAR(50)
+);
+
+--------------------------------------------------------
+-- 2. TABLA: ADMIN_SECRETARIA
+--------------------------------------------------------
+CREATE TABLE admin_secretaria (
+    cedula VARCHAR(20) PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    usuario VARCHAR(50) UNIQUE NOT NULL,
+    contrasena_hash VARCHAR(255) NOT NULL,
+    telefono VARCHAR(20)
+);
+
+--------------------------------------------------------
+-- 3. TABLA: CONVERSACION
+--------------------------------------------------------
+CREATE TABLE conversacion (
+    id_conversacion SERIAL PRIMARY KEY,
+    fecha_inicio TIMESTAMP NOT NULL,
+    fecha_fin TIMESTAMP,
+    cedula_solicitante VARCHAR(20),
+    CONSTRAINT fk_conversacion_solicitante
+        FOREIGN KEY (cedula_solicitante)
+        REFERENCES solicitante (cedula)
+        ON DELETE RESTRICT
+);
+
+--------------------------------------------------------
+-- 4. TABLA: MENSAJE
+--------------------------------------------------------
+CREATE TABLE mensaje (
+    id_mensaje SERIAL PRIMARY KEY,
+    id_conversacion INT NOT NULL,
+    remitente remitente_enum NOT NULL,
+    contenido TEXT,
+    fecha_hora TIMESTAMP NOT NULL,
+    CONSTRAINT fk_mensaje_conversacion
+        FOREIGN KEY (id_conversacion)
+        REFERENCES conversacion (id_conversacion)
+        ON DELETE CASCADE
+);
+
+--------------------------------------------------------
+-- 5. TABLA: ARCHIVO_ADJUNTO
+--------------------------------------------------------
+CREATE TABLE archivo_adjunto (
+    id_archivo SERIAL PRIMARY KEY,
+    id_mensaje INT NOT NULL,
+    tipo VARCHAR(50),
+    ruta_archivo VARCHAR(255),
+    CONSTRAINT fk_archivo_mensaje
+        FOREIGN KEY (id_mensaje)
+        REFERENCES mensaje (id_mensaje)
+        ON DELETE CASCADE
+);
+
+--------------------------------------------------------
+-- 6. TABLA: PALABRA_CLAVE
+--------------------------------------------------------
+CREATE TABLE palabra_clave (
+    id_pc SERIAL PRIMARY KEY,
+    palabra VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    respuesta_designada TEXT
+);
+
+--------------------------------------------------------
+-- 7. TABLA PUENTE: MENSAJE_PALABRA
+--------------------------------------------------------
+CREATE TABLE mensaje_palabra (
+    id_mensaje INT NOT NULL,
+    id_pc INT NOT NULL,
+    PRIMARY KEY (id_mensaje, id_pc),
+    CONSTRAINT fk_mp_mensaje
+        FOREIGN KEY (id_mensaje)
+        REFERENCES mensaje (id_mensaje)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_mp_palabra
+        FOREIGN KEY (id_pc)
+        REFERENCES palabra_clave (id_pc)
+        ON DELETE CASCADE
+);
+
+--------------------------------------------------------
+-- 8. TABLA PUENTE: MENSAJE_PALABRA
+--------------------------------------------------------
+
+CREATE TYPE estado_diario_enum AS ENUM (
+    'Pendiente',
+    'En revisión',
+    'Cerrado',
+    'Archivado'
+);
+
+CREATE TABLE diario_entrada (
+    id_entrada SERIAL PRIMARY KEY,
+
+    titulo VARCHAR(150),
+    contenido TEXT NOT NULL,
+
+    estado estado_diario_enum DEFAULT 'Pendiente',
+
+    secretaria_responsable VARCHAR(150), -- nombre libre
+    cedula_secretaria VARCHAR(20),        -- solo referencia lógica
+
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+###################################################################
+###################################################################
+
+--------------------------------------------------------
+INSERT INTO solicitante (cedula, nombre, telefono, tipo_solicitante) VALUES
+('0102030405', 'Ana Torres', '0991111111', 'Estudiante'),
+('0203040506', 'Carlos Pérez', '0982222222', 'Docente'),
+('0304050607', 'María López', '0973333333', 'Administrativo'),
+('0405060708', 'Juan Gómez', '0964444444', 'Visitante');
+--------------------------------------------------------
+INSERT INTO admin_secretaria (cedula, nombre, apellido, usuario, contrasena_hash, telefono) VALUES
+('1100110011', 'Laura', 'Mora', 'laura.admin', 'hash123', '0955555555'),
+('2200220022', 'Diana', 'Ruiz', 'diana.admin', 'hash456', '0946666666'),
+('3300330033', 'Paola', 'Vera', 'paola.admin', 'hash789', '0937777777'),
+('4400440044', 'Sofía', 'Castro', 'sofia.admin', 'hash321', '0928888888');
+--------------------------------------------------------
+INSERT INTO conversacion (fecha_inicio, fecha_fin, cedula_solicitante) VALUES
+(NOW() - INTERVAL '3 days', NOW() - INTERVAL '2 days', '0102030405'),
+(NOW() - INTERVAL '2 days', NOW() - INTERVAL '1 day', '0203040506'),
+(NOW() - INTERVAL '1 day', NULL, '0304050607'),
+(NOW(), NULL, '0405060708');
+--------------------------------------------------------
+INSERT INTO mensaje (id_conversacion, remitente, contenido, fecha_hora) VALUES
+(1, 'usuario', 'Hola, necesito información', NOW() - INTERVAL '3 days'),
+(1, 'bot', 'Claro, ¿en qué puedo ayudarte?', NOW() - INTERVAL '3 days'),
+(2, 'usuario', '¿Cuál es el horario de atención?', NOW() - INTERVAL '2 days'),
+(3, 'admin', 'Le responderemos en breve', NOW() - INTERVAL '1 day');
+--------------------------------------------------------
+INSERT INTO archivo_adjunto (id_mensaje, tipo, ruta_archivo) VALUES
+(1, 'imagen', '/uploads/imagen1.png'),
+(2, 'pdf', '/uploads/horarios.pdf'),
+(3, 'imagen', '/uploads/mapa.png'),
+(4, 'docx', '/uploads/respuesta.docx');
+--------------------------------------------------------
+INSERT INTO palabra_clave (palabra, descripcion, respuesta_designada) VALUES
+('horario', 'Consulta sobre horarios', 'Nuestro horario es de 08h00 a 16h00'),
+('matricula', 'Información de matrículas', 'Las matrículas inician en septiembre'),
+('ubicacion', 'Ubicación del campus', 'Estamos ubicados en el campus central'),
+('contacto', 'Datos de contacto', 'Puedes llamarnos al 0999999999');
+--------------------------------------------------------
+INSERT INTO mensaje_palabra (id_mensaje, id_pc) VALUES
+(1, 4),
+(2, 1),
+(3, 1),
+(4, 2);
+--------------------------------------------------------
+INSERT INTO diario_entrada
+(titulo, contenido, estado, secretaria_responsable, cedula_secretaria)
+VALUES
+(
+    'Solicitud de acceso al sistema',
+    'El solicitante indicó que no puede acceder al sistema desde horas de la mañana. Se registró el incidente para revisión.',
+    'Pendiente',
+    'María López',
+    '0304050607'
+),
+(
+    'Error en generación de reportes',
+    'Durante la jornada se detectó un fallo al generar reportes mensuales. Se notificó al área técnica.',
+    'En revisión',
+    'Ana Torres',
+    '0102030405'
+),
+(
+    'Actualización de datos personales',
+    'El usuario solicitó la actualización de su información personal. El proceso fue realizado con éxito.',
+    'Cerrado',
+    'Carlos Pérez',
+    '0203040506'
+),
+(
+    'Solicitud archivada por duplicidad',
+    'Se identificó que la solicitud ya había sido registrada anteriormente, por lo que se decidió archivarla.',
+    'Archivado',
+    'Lucía Herrera',
+    '0405060708'
+);
+###################################################################
+###################################################################
+
+import psycopg2
+from psycopg2 import Error
+
+def get_db():
+    try:
+        connection = psycopg2.connect(
+            host="localhost",        # 🔴 LOCAL
+            port="5432",
+            user="postgres",         # o el usuario que creaste
+            password="tu_password",
+            dbname="chatbot_secretaria",
+            sslmode="disable"        # 🔴 LOCAL → SIN SSL
+        )
+        return connection
+
+    except Error as e:
+        print(f"Error al conectar a PostgreSQL: {e}")
+        return None
+
+
+###################################################################
+###################################################################
+
+import psycopg2
+from psycopg2 import Error
+
+def get_db():
+    try:
+        connection = psycopg2.connect(
+            host="dpg-d5sm0dc9c44c739csnhg-a.oregon-postgres.render.com",
+            port="5432",
+            user="admin",
+            password="x9Hw2ZP0vV0LN74kWwSXufApbqhbO2nO",
+            dbname="chatbot_db_z5tb",
+            sslmode="require"   # 🔑 ESTA LÍNEA
+        )
+        return connection
+
+    except Error as e:
+        print(f"Error al conectar a PostgreSQL: {e}")
+        return None
+
+###################################################################
+###################################################################

@@ -117,7 +117,7 @@ def guardar_palabra():
 # ======================================================
 # FORMULARIO EDITAR
 # ======================================================
-@palabras_bp.route("/editar-palabra/<int:id_pc>")
+@palabras_bp.route("/editar-pa/<int:id_pc>")
 def editar_palabra(id_pc):
     conn = None
     cursor = None
@@ -145,7 +145,7 @@ def editar_palabra(id_pc):
             conn.close()
 
     return render_template(
-        "editar_palabra.html",
+        "palabrasclave_editar.html",
         palabra=palabra
     )
 # ======================================================

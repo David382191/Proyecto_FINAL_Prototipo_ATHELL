@@ -20,9 +20,17 @@ from controllers.registro_crud.conversaciones_tabla_controller import conversaci
 from controllers.registro_crud.mensajes_tabla_controller import mensajes_bp
 from controllers.registro_crud.palabrasclave_tabla_controller import palabras_bp
 from controllers.registro_crud.secretaria_tabla_controller import secretaria_bp
+from controllers.registro_crud.entradasdiario_tabla_controller import diario_bp
 
 # ----------------------- Editables ----------------------------------------------#
 from controllers.editables.editar import editar
+
+
+# ----------------------- Eliminables ----------------------------------------------#
+from controllers.eliminables.eliminar import eliminar_bp
+
+
+#################################################################################################
 
 def create_app():
     app = Flask(__name__)
@@ -45,10 +53,13 @@ def create_app():
     app.register_blueprint(mensajes_bp)
     app.register_blueprint(palabras_bp)
     app.register_blueprint(secretaria_bp)
+    app.register_blueprint(diario_bp)
 
     #Editar
     app.register_blueprint(editar)
 
+    #Editar
+    app.register_blueprint(eliminar_bp)
     return app
 
 app = create_app()
@@ -59,8 +70,9 @@ if __name__ == "__main__":
     
     #esto de aquí es para la nube
     #app = create_app()
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(debug=True)
+    #port = int(os.environ.get("PORT", 5000))
+    #app.run(host="0.0.0.0", port=port)
 #################################################################################################
 
 #    print("RUTAS REGISTRADAS:")

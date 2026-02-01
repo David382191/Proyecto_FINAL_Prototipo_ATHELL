@@ -99,20 +99,19 @@
                 <tbody>
                 {% for s in solicitantes %}
                 <tr>
-                    <td>{{ s.CEDULA }}</td>
-                    <td>{{ s.Nombre }}</td>
-                    <td>{{ s.Telefono }}</td>
-                    <td>{{ s.Tipo_solicitante }}</td>
+                    <td>{{ s.cedula }}</td>
+                    <td>{{ s.nombre }}</td>
+                    <td>{{ s.telefono }}</td>
+                    <td>{{ s.tipo_solicitante }}</td>
 
                     <!-- ACCIONES -->
-                    <td>
-                        
-                        <a href="{{ url_for('solicitantes_bp.traerinformacion', cedula=s.CEDULA) }}"
+                    <td>        
+                        <a href="{{ url_for('solicitantes_bp.traerinformacion', cedula=s.cedula) }}"
                             class="btn btn-warning btn-sm">
                             <i class="fa-solid fa-pen"></i> 
                         </a>
 
-                        <a href="{{ url_for('solicitantes_bp.eliminar_solicitante', cedula=s.CEDULA) }}" 
+                        <a href="{{ url_for('solicitantes_bp.eliminar_solicitante', cedula=s.cedula) }}" 
                            class="btn btn-danger btn-sm"
                            onclick="return confirm('¿Seguro que deseas eliminar este solicitante?');">
                             <i class="fa-solid fa-trash"></i>

@@ -26,11 +26,11 @@ def lista_secretarias():
     # 3️⃣ Traer datos reales
     cursor.execute("""
         SELECT
-            cedula   AS "CEDULA",
-            nombre   AS "Nombre",
-            apellido AS "Apellido",
-            usuario  AS "Usuario",
-            telefono AS "Telefono"
+            cedula   AS "cedula",
+            nombre   AS "nombre",
+            apellido AS "apellido",
+            usuario  AS "usuario",
+            telefono AS "telefono"
         FROM admin_secretaria
     """)
     secretarias = cursor.fetchall()
