@@ -8,8 +8,6 @@ import openai
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
- 
-
 #############################################################################
 # Blueprint
 bot_bp = Blueprint("bot_bp", __name__)
