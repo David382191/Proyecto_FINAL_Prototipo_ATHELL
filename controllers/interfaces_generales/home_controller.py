@@ -39,4 +39,9 @@ def salir():
 @home_bp.route("/entradasdiario")
 def entradasdiario():
     return redirect(url_for("diario_bp.listar_diario_tabla"))
+
+@home_bp.route("/ir_crear_entrada")
+def ir_crear_entrada():
+    return render_template("formularios/crear_entrada.html")
+
 ################################################################################
