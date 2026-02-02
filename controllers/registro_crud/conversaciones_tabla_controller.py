@@ -45,45 +45,7 @@ def listar_conversaciones():
 # ============================================================
 # 2- BUSCAR (por ID o Cédula)
 # ============================================================
-@conversaciones_bp.route("/buscar-conversaciones")
-def buscar_conversaciones():
-    q = request.args.get("q", "").strip()
 
-    conn = None
-    cursor = None
-    resultados = []
-
-    try:
-        conn = get_db()
-        cursor = conn.cursor(cursor_factory=RealDictCursor)
-
-        sql = """
-            SELECT *
-            FROM conversacion
-            WHERE id_conversacion LIKE %s
-               OR cedula_solicitante LIKE %s
-        """
-
-        print("📌 DATOS:", sql)
-
-        like = f"%{q}%"
-        cursor.execute(sql, (like, like))
-        resultados = cursor.fetchall()
-
-    except Error as e:
-        print(f"Error al buscar conversaciones: {e}")
-        resultados = []
-
-    finally:
-        if cursor:
-            cursor.close()
-        if conn:
-            conn.close()
-
-    return render_template(
-        "registros_crud/conversaciones_tabla.html",
-        conversaciones=resultados
-    )
 # ============================================================
 # 3- MOSTRAR MENSAJES DE UNA CONVERSACIÓN
 # (Esto asume que tienes otra tabla MENSAJE)

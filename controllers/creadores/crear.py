@@ -49,3 +49,9 @@ def crear_palabra_clave():
     # ✅ Renderiza el formulario
     return render_template("registro_crud/palabrasclave_tabla.html")
 #######################################################################################
+
+
+
+
+
+#######################################################################################

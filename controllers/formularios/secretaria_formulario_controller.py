@@ -93,7 +93,7 @@ def agregar_admin():
         count_cedula = cursor.fetchone()[0]
         if count_cedula > 0:
             flash("¡Error! Ya existe un admin con esa cédula.", "danger")
-            return redirect("/secretaria_tabla")
+            return redirect("/ir-crear-secretaria")
 
         # 2️⃣ Validar USUARIO
         cursor.execute(
@@ -103,7 +103,7 @@ def agregar_admin():
         count_usuario = cursor.fetchone()[0]
         if count_usuario > 0:
             flash("¡Error! El nombre de usuario ya está en uso.", "danger")
-            return redirect("/secretaria_tabla")
+            return redirect("/ir-crear-secretaria")
 
         # 3️⃣ Insertar registro
         cursor.execute("""
@@ -121,7 +121,7 @@ def agregar_admin():
             conn.rollback()
         print(f"Error al agregar admin: {e}")
         flash("Ocurrió un error al agregar el admin", "danger")
-        return redirect("/secretaria_tabla")
+        return redirect("/ir-crear-secretaria")
 
     finally:
         if cursor:
