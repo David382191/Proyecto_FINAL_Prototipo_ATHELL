@@ -37,3 +37,34 @@ def eliminar_entrada(id_entrada):
 
     return redirect("/entradasdiario")
 ###################################################################################################
+@eliminar_bp.route("/eliminar-palabra/<int:id_pc>")
+def eliminar_palabra(id_pc):
+    conn = None
+    cursor = None
+
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            DELETE FROM palabra_clave
+            WHERE id_pc = %s
+        """, (id_pc,))
+
+        conn.commit()
+
+    except Error as e:
+        if conn:
+            conn.rollback()
+        print(f"Error al eliminar palabra clave: {e}")
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+    return redirect("/palabrasclave_tabla")  # <-- página donde se muestran las palabras
+###################################################################################################
+
+#################################################################################################

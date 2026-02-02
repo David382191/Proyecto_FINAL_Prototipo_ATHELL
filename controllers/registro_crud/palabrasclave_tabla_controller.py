@@ -84,7 +84,7 @@ def mostrar_tabla_palabras():
 # ======================================================
 @palabras_bp.route("/ir-crear-palabra")
 def guardar_palabra():
-    return render_template("formulario/palabrasclave_formulario.html")
+    return render_template("formularios/palabrasclave_formulario.html")
 # ======================================================
 # FORMULARIO EDITAR
 # ======================================================
@@ -160,32 +160,3 @@ def actualizar_palabra(id_pc):
 # ======================================================
 # ELIMINAR
 # ======================================================
-@palabras_bp.route("/eliminar-palabra/<int:id_pc>")
-def eliminar_palabra(id_pc):
-    conn = None
-    cursor = None
-
-    try:
-        conn = get_db()
-        cursor = conn.cursor()
-
-        cursor.execute("""
-            DELETE FROM palabra_clave
-            WHERE id_pc = %s
-        """, (id_pc,))
-
-        conn.commit()
-
-    except Error as e:
-        if conn:
-            conn.rollback()
-        print(f"Error al eliminar palabra clave: {e}")
-
-    finally:
-        if cursor:
-            cursor.close()
-        if conn:
-            conn.close()
-
-    return redirect("/palabras")
-#################################################################################################

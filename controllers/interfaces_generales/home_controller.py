@@ -36,5 +36,4 @@ def salir():
 @home_bp.route("/entradasdiario")
 def entradasdiario():
     return redirect(url_for("diario_bp.listar_diario_tabla"))
-
 ################################################################################

@@ -94,7 +94,8 @@ if __name__ == "__main__":
     #app = create_app()
     #app.run(debug=True)
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    #app.run(host="0.0.0.0", port=port)
+    app.run(host="127.0.0.1", port=5000, debug=True)
 #################################################################################################
 
 #    print("RUTAS REGISTRADAS:")
@@ -102,3 +103,5 @@ if __name__ == "__main__":
 # 
 # Recuerda, esto de aquí es para reproducir en local.
 # app.run(debug=True)
+#Esto es para hacerlo local, solo cambialo por donde dice app.run allí arriba.
+#app.run(host="127.0.0.1", port=5000, debug=True)

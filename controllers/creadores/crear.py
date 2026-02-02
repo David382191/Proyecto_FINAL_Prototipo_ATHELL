@@ -32,7 +32,7 @@ def crear_palabra_clave():
 
             conn.commit()
             flash(f"Palabra '{palabra}' agregada correctamente", "success")
-            return redirect(url_for("palabra_form_bp.crear_palabra_clave"))
+            return redirect(url_for("palabras_bp.guardar_palabra"))
 
     except Error as e:
         if conn:
