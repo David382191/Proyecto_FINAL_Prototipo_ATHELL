@@ -53,8 +53,8 @@ def buscar_palabra_clave(texto_usuario):
 
     query = """
         SELECT respuesta_designada
-        FROM PALABRA_CLAVE
-        WHERE %s ILIKE '%' || Palabra || '%';
+        FROM palabra_clave
+        WHERE %s ILIKE '%' || palabra || '%';
     """
 
     cursor.execute(query, (texto_usuario,))
@@ -73,7 +73,7 @@ def guardar_mensaje(id_conversacion, remitente, contenido):
     cursor = conn.cursor()
 
     query = """
-        INSERT INTO MENSAJE (id_conversacion, remitente, contenido, fecha_hora)
+        INSERT INTO mensaje (id_conversacion, remitente, contenido, fecha_hora)
         VALUES (%s, %s, %s, %s)
     """
 
