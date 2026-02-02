@@ -24,17 +24,16 @@ def login():
         conn = get_db()
         cursor = conn.cursor()
 
-        # Buscar usuario en la base de datos
         cursor.execute(
-            "SELECT nombre, apellido, usuario, contrasena_hash FROM admin_secretaria WHERE usuario = %s",
+            "SELECT nombre, apellido, contrasena_hash FROM admin_secretaria WHERE usuario = %s",
             (username,)
         )
         row = cursor.fetchone()
 
         if row:
-            nombre, apellido, db_usuario, db_contrasena = row
-            if password == db_contrasena:
-                session['usuario_nombre'] = f"{nombre} {apellido}"
+            db_nombre, db_apellido, db_contrasena = row
+            if password == db_contrasena:  # o check_password_hash
+                session['usuario_nombre'] = f"{db_nombre} {db_apellido}"
                 return redirect(url_for("login_bp.home"))
 
 
@@ -82,11 +81,14 @@ def panel_solicitantes():
 ############################
 @login_bp.route("/home")
 def home():
-    usuario_nombre = session.get('usuario_nombre', 'Usuario')
+    usuario_nombre = session.get('usuario_nombre', 'Usuario')  # valor por defecto
+    print("Nombre en sesión:", usuario_nombre)  # para depuración
     return render_template(
         "interfaces_generales/home.html",
         usuario_nombre=usuario_nombre
     )
+
+
 ############################
 ##from flask import Blueprint, render_template, session, redirect
 
