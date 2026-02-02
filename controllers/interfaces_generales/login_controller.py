@@ -1,6 +1,6 @@
 ## Por Alfonso Espinoza
 ###################################################
-from flask import Blueprint, render_template, flash, request, redirect, url_for
+from flask import Blueprint, render_template, flash, request, redirect, url_for, session
 from database.db import get_db
 import psycopg2
 from psycopg2 import Error
@@ -26,17 +26,17 @@ def login():
 
         # Buscar usuario en la base de datos
         cursor.execute(
-            "SELECT usuario, contrasena_hash FROM admin_secretaria WHERE usuario = %s",
+            "SELECT nombre, apellido, usuario, contrasena_hash FROM admin_secretaria WHERE usuario = %s",
             (username,)
         )
         row = cursor.fetchone()
 
         if row:
-            db_usuario, db_contrasena = row
-
-            # ⚠️ Si estás usando texto plano para pruebas:
+            nombre, apellido, db_usuario, db_contrasena = row
             if password == db_contrasena:
-                return redirect(url_for("home_bp.home"))
+                session['usuario_nombre'] = f"{nombre} {apellido}"
+                return redirect(url_for("login_bp.home"))
+
 
             # ✅ Si usas hash (recomendado):
             # if check_password_hash(db_contrasena, password):
@@ -56,6 +56,8 @@ def login():
             cursor.close()
         if conn:
             conn.close()
+
+            
 ###################################################
 
 ###################################################
@@ -80,7 +82,11 @@ def panel_solicitantes():
 ############################
 @login_bp.route("/home")
 def home():
-    return render_template("/interfaces_generales/home.html")
+    usuario_nombre = session.get('usuario_nombre', 'Usuario')
+    return render_template(
+        "interfaces_generales/home.html",
+        usuario_nombre=usuario_nombre
+    )
 ############################
 ##from flask import Blueprint, render_template, session, redirect
 
