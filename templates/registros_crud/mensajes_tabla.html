@@ -122,6 +122,15 @@
                             <i class="fa-solid fa-print"></i>
                         </a>
 
+
+                        <a href="{{ url_for('eliminar_bp.eliminar_mensaje', id_mensaje=m.id_mensaje) }}" 
+                            class="btn btn-danger btn-sm"
+                            onclick="return confirm('¿Seguro que deseas eliminar estas entrada?');">
+                                <i class="fa-solid fa-trash"></i>
+                        </a>
+
+
+
                     </td>
                 </tr>
                 {% endfor %}

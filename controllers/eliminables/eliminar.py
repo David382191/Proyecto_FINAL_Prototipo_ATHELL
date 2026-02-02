@@ -66,5 +66,61 @@ def eliminar_palabra(id_pc):
 
     return redirect("/palabrasclave_tabla")  # <-- página donde se muestran las palabras
 ###################################################################################################
+@eliminar_bp.route("/eliminar-mensaje/<int:id_mensaje>")
+def eliminar_mensaje(id_mensaje):
+    conn = None
+    cursor = None
 
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            DELETE FROM mensaje
+            WHERE id_mensaje = %s
+        """, (id_mensaje,))
+
+        conn.commit()
+
+    except Exception as e:  # Puedes usar Error si lo importaste de psycopg2
+        if conn:
+            conn.rollback()
+        print(f"Error al eliminar mensaje: {e}")
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+    return redirect("/mensajes_tabla")  # <-- página donde se muestran los mensajes
+#################################################################################################
+@eliminar_bp.route("/eliminar-conversacion/<int:id_conversacion>")
+def eliminar_conversacion(id_conversacion):
+    conn = None
+    cursor = None
+
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            DELETE FROM conversacion
+            WHERE id_conversacion = %s
+        """, (id_conversacion,))
+
+        conn.commit()
+
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        print(f"Error al eliminar conversación: {e}")
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+    return redirect("/conversaciones_tabla")  # <-- página donde se muestran las conversaciones
 #################################################################################################
