@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, flash
+from flask import Blueprint, render_template, request, redirect, flash, url_for
 from psycopg2.extras import RealDictCursor
 from database.db import get_db
 from psycopg2 import Error
@@ -82,38 +82,9 @@ def mostrar_tabla_palabras():
 # ======================================================
 # PROCESAR CREACIÓN
 # ======================================================
-@palabras_bp.route("/crear-palabra", methods=["POST"])
+@palabras_bp.route("/ir-crear-palabra")
 def guardar_palabra():
-    palabra = request.form["Palabra"]
-    descripcion = request.form["Descripcion"]
-    respuesta = request.form["Respuesta_designada"]
-
-    conn = None
-    cursor = None
-
-    try:
-        conn = get_db()
-        cursor = conn.cursor()
-
-        cursor.execute("""
-            INSERT INTO palabra_clave (palabra, descripcion, respuesta_designada)
-            VALUES (%s, %s, %s)
-        """, (palabra, descripcion, respuesta))
-
-        conn.commit()
-
-    except Error as e:
-        if conn:
-            conn.rollback()
-        print(f"Error al guardar palabra clave: {e}")
-
-    finally:
-        if cursor:
-            cursor.close()
-        if conn:
-            conn.close()
-
-    return redirect("/palabras")
+    return render_template("formulario/palabrasclave_formulario.html")
 # ======================================================
 # FORMULARIO EDITAR
 # ======================================================

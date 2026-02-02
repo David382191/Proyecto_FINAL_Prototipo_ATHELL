@@ -1,11 +1,13 @@
 ################################################################################################
 ################################################################################################
-from flask import Blueprint, render_template, request, redirect, flash
+from flask import Flask, Blueprint, render_template, request, redirect, flash
 from database.db import get_db
-from database.db import get_db
+import psycopg2
 from psycopg2.extras import RealDictCursor
 from psycopg2 import Error
-
+from datetime import datetime
+import os
+################################################################################################
 palabrasclave_formulario_bp = Blueprint("palabrasclave_formulario_bp",__name__)
 
 # ======================================================
