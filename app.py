@@ -33,7 +33,7 @@ from controllers.eliminables.eliminar import eliminar_bp
 from controllers.buscadores.buscar import buscar_bp
 
 # ----------------------- BOT ----------------------------------------------#
-from IA_BOT.ia_bot import bot_bp
+#from IA_BOT.ia_bot import bot_bp
 
 
 
@@ -73,7 +73,7 @@ def create_app():
     app.register_blueprint(buscar_bp)
 
     #IA CHAT-BOT
-    app.register_blueprint(bot_bp)
+    #app.register_blueprint(bot_bp)
 
 
 
