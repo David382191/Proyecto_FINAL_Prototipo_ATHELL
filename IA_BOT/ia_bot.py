@@ -24,7 +24,7 @@ def responder_ia(texto):
     return respuesta.choices[0].message.content
 #############################################################################
 # Endpoint de WhatsApp
-@bot_bp.route("/bot", methods=["POST"])
+@bot_bp.route("/bot", methods=["GET","POST"])
 def whatsapp_bot():
     mensaje_usuario = request.form.get("Body", "").strip()
 
