@@ -17,10 +17,12 @@ openai.api_key = os.environ.get("OPENAI_API_KEY")
 #############################################################################
 # Función para responder usando OpenAI
 def responder_ia(texto):
+    print("LLamando a OpenAI con:", texto)
     respuesta = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[{"role":"user","content": texto}]
     )
+    print("Respuesta de OpenAI:", respuesta.choices[0].message.content)
     return respuesta.choices[0].message.content
 #############################################################################
 # Endpoint de WhatsApp
