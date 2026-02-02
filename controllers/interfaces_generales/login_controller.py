@@ -1,34 +1,63 @@
 ## Por Alfonso Espinoza
 ###################################################
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, flash, request, redirect, url_for
 from database.db import get_db
+import psycopg2
+from psycopg2 import Error
+from werkzeug.security import check_password_hash  # si usas hash
 ###################################################
 login_bp = Blueprint("login_bp", __name__)
 ###################################################
-###################################################
 @login_bp.route("/", methods=["GET", "POST"])
 def login():
-
-    # SI ENTRA POR GET → mostrar formulario
     if request.method == "GET":
         return render_template("interfaces_generales/login.html")
 
-    # SI ENTRA POR POST → procesar login
+    # Obtener datos del formulario
     username = request.form.get("username")
     password = request.form.get("password")
 
-    # VALIDACIÓN SIMPLE prototipo
-    if username == "Admin" and password == "1234":
-        return render_template("/interfaces_generales/home.html")
-    #redirect(url_for("/interfaces_generales/home.html"))  # o al panel principal
-    else:
-        error = "Usuario o contraseña incorrectos"
-        return render_template(
-            "interfaces_generales/login.html",
-            error=error
+    conn = None
+    cursor = None
 
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
 
+        # Buscar usuario en la base de datos
+        cursor.execute(
+            "SELECT usuario, contrasena_hash FROM admin_secretaria WHERE usuario = %s",
+            (username,)
         )
+        row = cursor.fetchone()
+
+        if row:
+            db_usuario, db_contrasena = row
+
+            # ⚠️ Si estás usando texto plano para pruebas:
+            if password == db_contrasena:
+                return redirect(url_for("home_bp.home"))
+
+            # ✅ Si usas hash (recomendado):
+            # if check_password_hash(db_contrasena, password):
+            #     return redirect(url_for("home_bp.home"))
+
+        # Si no encontró usuario o contraseña incorrecta
+        flash("Usuario o contraseña incorrectos", "danger")
+        return redirect(url_for("login_bp.login"))
+
+    except Error as e:
+        print(f"Error en login: {e}")
+        flash("Error al intentar conectarse a la base de datos", "danger")
+        return redirect(url_for("login_bp.login"))
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+###################################################
+
 ###################################################
 # ============================================================
 # 1. LISTAR SOLICITANTES

@@ -164,3 +164,41 @@ def buscar_conversaciones():
         conversaciones=resultados
     )
 # ======================================================================================
+@buscar_bp.route("/buscar-secretaria")
+def buscar_secretaria():
+    q = request.args.get("q", "").strip()
+
+    conn = None
+    cursor = None
+
+    try:
+        conn = get_db()
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+
+        sql = """
+            SELECT *
+            FROM admin_secretaria
+            WHERE cedula   ILIKE %s
+               OR nombre   ILIKE %s
+               OR apellido ILIKE %s
+        """
+
+        like = f"%{q}%"
+        cursor.execute(sql, (like, like, like))
+        resultados = cursor.fetchall()
+
+    except Error as e:
+        print(f"Error al buscar secretarias: {e}")
+        resultados = []
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+    return render_template(
+        "registros_crud/secretaria_tabla.html",
+        secretarias=resultados
+    )
+# ======================================================================================
