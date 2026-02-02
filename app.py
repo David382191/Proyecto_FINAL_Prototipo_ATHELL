@@ -35,6 +35,8 @@ from controllers.buscadores.buscar import buscar_bp
 # ----------------------- BOT ----------------------------------------------#
 #from IA_BOT.ia_bot import bot_bp
 
+# ----------------------- Crear ----------------------------------------------#
+from controllers.creadores.crear import crear_bp
 
 
 
@@ -71,6 +73,9 @@ def create_app():
 
     #Buscar
     app.register_blueprint(buscar_bp)
+
+    #Crear
+    app.register_blueprint(crear_bp)
 
     #IA CHAT-BOT
     #app.register_blueprint(bot_bp)
