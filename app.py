@@ -87,9 +87,9 @@ if __name__ == "__main__":
     
     #esto de aquí es para la nube
     #app = create_app()
-    app.run(debug=True)
-    #port = int(os.environ.get("PORT", 5000))
-    #app.run(host="0.0.0.0", port=port)
+    #app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
 #################################################################################################
 
 #    print("RUTAS REGISTRADAS:")
