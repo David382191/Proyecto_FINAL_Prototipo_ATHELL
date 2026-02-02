@@ -51,14 +51,14 @@ def whatsapp_bot():
 #############################################################################
 def buscar_palabra_clave(texto_usuario):
     conn = get_db()
-    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    cursor = conn.cursor()
 
+    # Convertimos todo a minúsculas para insensibilidad
     query = """
         SELECT respuesta_designada
-        FROM palabra_clave
-        WHERE %s ILIKE '%' || palabra || '%';
+        FROM PALABRA_CLAVE
+        WHERE LOWER(Palabra) LIKE '%' || LOWER(%s) || '%';
     """
-
     cursor.execute(query, (texto_usuario,))
     resultado = cursor.fetchone()
 
@@ -66,9 +66,9 @@ def buscar_palabra_clave(texto_usuario):
     conn.close()
 
     if resultado:
-        return resultado["respuesta_designada"]
-    
+        return resultado[0]
     return None
+
 #############################################################################
 def guardar_mensaje(id_conversacion, remitente, contenido):
     conn = get_db()
