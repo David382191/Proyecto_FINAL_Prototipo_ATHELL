@@ -64,8 +64,9 @@ def buscar_palabra_clave(texto_usuario):
     conn.close()
 
     if resultado:
-        return resultado[0]  # porque fetchone() devuelve tupla
+        return resultado[0]  # porque fetchone() devuelve una tupla
     return None
+
 #############################################################################
 def guardar_mensaje(id_conversacion, remitente, contenido):
     conn = get_db()
