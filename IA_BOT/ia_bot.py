@@ -56,7 +56,7 @@ def buscar_palabra_clave(texto_usuario):
     query = """
         SELECT Respuesta_designada
         FROM PALABRA_CLAVE
-        WHERE %s ILIKE '%' || Palabra || '%';
+        WHERE Palabra ILIKE '%' || %s || '%';
     """
     cursor.execute(query, (texto_usuario,))
     resultado = cursor.fetchone()
@@ -64,7 +64,7 @@ def buscar_palabra_clave(texto_usuario):
     conn.close()
 
     if resultado:
-        return resultado[0]
+        return resultado[0]  # porque fetchone() devuelve tupla
     return None
 #############################################################################
 def guardar_mensaje(id_conversacion, remitente, contenido):
