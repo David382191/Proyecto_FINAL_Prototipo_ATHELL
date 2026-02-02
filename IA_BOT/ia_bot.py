@@ -53,24 +53,18 @@ def buscar_palabra_clave(texto_usuario):
     conn = get_db()
     cursor = conn.cursor()
 
-    # Convertimos todo a minúsculas para insensibilidad a mayúsculas
-    texto_usuario_lower = texto_usuario.lower()
-    valor_like = f"%{texto_usuario_lower}%"  # concatenamos los % aquí
-
     query = """
-        SELECT respuesta_designada
+        SELECT Respuesta_designada
         FROM PALABRA_CLAVE
-        WHERE LOWER(palabra) LIKE %s
-        LIMIT 1;
+        WHERE %s ILIKE '%' || Palabra || '%';
     """
-    cursor.execute(query, (valor_like,))
+    cursor.execute(query, (texto_usuario,))
     resultado = cursor.fetchone()
-
     cursor.close()
     conn.close()
 
     if resultado:
-        return resultado[0]  # en psycopg2, fetchone devuelve tuple
+        return resultado[0]
     return None
 #############################################################################
 def guardar_mensaje(id_conversacion, remitente, contenido):
