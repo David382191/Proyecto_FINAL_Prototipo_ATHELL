@@ -53,13 +53,17 @@ def buscar_palabra_clave(texto_usuario):
     conn = get_db()
     cursor = conn.cursor()
 
+    # Usando ILIKE para que no sea sensible a mayúsculas/minúsculas
     query = """
         SELECT Respuesta_designada
         FROM PALABRA_CLAVE
-        WHERE Palabra ILIKE '%' || %s || '%';
+        WHERE Palabra ILIKE %s
+        LIMIT 1;
     """
-    cursor.execute(query, (texto_usuario,))
+    # Ponemos % a ambos lados para buscar como "contiene"
+    cursor.execute(query, (f"%{texto_usuario}%",))
     resultado = cursor.fetchone()
+
     cursor.close()
     conn.close()
 
